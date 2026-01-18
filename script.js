@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'question.startLive': 'Cliquez sur "Démarrer" pour commencer',
             'liveGuitar.start': 'Démarrer',
             'liveGuitar.stop': 'Arrêter',
+            'liveGuitar.sound': 'Son de notification',
             'options.mode': 'Mode:',
             'options.notes': 'Notes:',
             'options.strings': 'Cordes:',
@@ -75,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'question.startLive': 'Click "Start" to begin',
             'liveGuitar.start': 'Start',
             'liveGuitar.stop': 'Stop',
+            'liveGuitar.sound': 'Notification sound',
             'options.mode': 'Mode:',
             'options.notes': 'Notes:',
             'options.strings': 'Strings:',
@@ -126,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let score = 0;
     let streak = 0;
     let waitingForAnswer = false;
+    let soundEnabled = true; // Option pour activer/désactiver le son en mode Live Guitar
     
     // Variables pour le mode Guitare Live
     let audioContext = null;
@@ -175,7 +178,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 stringFilter: stringFilter,
                 frenchNotation: frenchNotation,
                 currentMode: currentMode,
-                language: currentLanguage
+                language: currentLanguage,
+                soundEnabled: soundEnabled
             };
             localStorage.setItem('guitarGameOptions', JSON.stringify(options));
         } catch (e) {
@@ -229,6 +233,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     let frenchNotation = savedOptions?.frenchNotation !== undefined ? savedOptions.frenchNotation : true;
     let currentMode = savedOptions?.currentMode || 'find-note';
+    
+    // Charger la préférence son (par défaut true)
+    if (savedOptions && typeof savedOptions.soundEnabled === 'boolean') {
+        soundEnabled = savedOptions.soundEnabled;
+    }
     
     // Flag pour éviter les sauvegardes pendant l'initialisation
     let isInitializing = true;
@@ -841,6 +850,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ========== MODE GUITARE LIVE - Détection audio ==========
     
+    // Gestion de la checkbox pour le son en mode Live Guitar
+    const soundToggle = document.getElementById('soundToggle');
+    if (soundToggle) {
+        // Appliquer la préférence sauvegardée
+        soundToggle.checked = soundEnabled;
+        
+        // Écouter les changements
+        soundToggle.addEventListener('change', function() {
+            soundEnabled = this.checked;
+            saveGameOptions();
+        });
+    }
+    
     // Bouton Start/Stop pour le mode Guitare Live
     const startStopLiveButton = document.getElementById('startStopLiveButton');
     if (startStopLiveButton) {
@@ -1045,8 +1067,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // En mode live guitar, pas de score ni streak (on cherche juste la bonne note)
             // Pas de mise à jour des stats
             
-            // Jouer le son de notification
-            playSuccessSound();
+            // Jouer le son de notification si activé
+            if (soundEnabled) {
+                playSuccessSound();
+            }
             
             currentQuestion.element.classList.add('correct-answer');
             

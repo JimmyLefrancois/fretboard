@@ -579,6 +579,31 @@ h1 {
     display: none;
 }
 
+.live-guitar-options {
+    margin-bottom: 15px;
+}
+
+.sound-toggle-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 0.95rem;
+    user-select: none;
+}
+
+.sound-toggle-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #2ECC71;
+}
+
+.sound-toggle-label:hover {
+    opacity: 0.9;
+}
+
 .btn-live-control {
     display: inline-flex;
     align-items: center;
