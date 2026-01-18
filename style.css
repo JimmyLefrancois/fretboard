@@ -103,7 +103,8 @@ h1 {
 .fret.marker-3::before,
 .fret.marker-5::before,
 .fret.marker-7::before,
-.fret.marker-9::before {
+.fret.marker-9::before,
+.fret.marker-12::before {
     content: '';
     position: absolute;
     width: 12px;
@@ -117,7 +118,7 @@ h1 {
 }
 
 /* Double marqueur sur la 12ème frette */
-.fret.marker-12::before {
+/* .fret.marker-12::before {
     content: '';
     position: absolute;
     width: 10px;
@@ -128,9 +129,9 @@ h1 {
     left: 50%;
     transform: translate(-50%, -50%);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
+} */
 
-.fret.marker-12::after {
+/* .fret.marker-12::after {
     content: '';
     position: absolute;
     width: 10px;
@@ -141,7 +142,7 @@ h1 {
     left: 50%;
     transform: translate(-50%, -50%);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
+} */
 
 /* Styles pour les états actifs/sélectionnés (pour futures fonctionnalités) */
 .fret.active {
