@@ -18,6 +18,7 @@
                 <div class="mode-buttons">
                     <button class="btn-mode" data-mode="practice">Entraînement libre</button>
                     <button class="btn-mode active" data-mode="find-note">Trouver la note</button>
+                    <button class="btn-mode" data-mode="live-guitar">🎸 Guitare Live</button>
                 </div>
             </div>
             
@@ -43,6 +44,7 @@
             <!-- Sélection des cordes -->
             <div class="sidebar-section">
                 <h3>Cordes</h3>
+                <button id="toggleAllStrings" class="btn-toggle-all">Tout décocher</button>
                 <div class="string-filter">
                     <label class="string-option">
                         <input type="checkbox" name="string" value="e" checked>
@@ -95,6 +97,14 @@
                 <!-- Zone de jeu -->
                 <div class="game-area" id="gameArea">
                     <div class="game-info">
+                        <div class="question" id="question">Cliquez sur "Nouvelle question" pour commencer</div>
+                        <div id="liveGuitarStatus" class="live-guitar-status hidden">
+                            <div class="mic-indicator">
+                                <span class="mic-icon">🎤</span>
+                                <span class="mic-text">Micro désactivé</span>
+                            </div>
+                            <div class="detected-note" id="detectedNote">En attente...</div>
+                        </div>
                         <div class="game-options" id="gameOptions">
                             <span class="option-item"><strong>Mode:</strong> <span id="optionMode">Trouver la note</span></span>
                             <span class="option-separator">•</span>
@@ -111,8 +121,6 @@
                     </div>
                     <button id="newQuestion" class="btn-primary">Nouvelle question</button>
                 </div>
-                <p class="question text-center" id="question">Cliquez sur "Nouvelle question" pour commencer</p>
-
         
         <div class="fretboard-container">
             <table class="fretboard">

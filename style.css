@@ -216,6 +216,26 @@ h1 {
     font-weight: 700;
 }
 
+/* Bouton pour tout cocher/décocher */
+.btn-toggle-all {
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #5B9BD5;
+    background: rgba(91, 155, 213, 0.1);
+    border: 2px solid rgba(91, 155, 213, 0.3);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-toggle-all:hover {
+    background: rgba(91, 155, 213, 0.2);
+    border-color: rgba(91, 155, 213, 0.5);
+}
+
 /* Sélection du mode de jeu */
 .game-mode-selector {
     text-align: center;
@@ -380,6 +400,135 @@ h1 {
 .option-separator {
     color: #5B9BD5;
     font-weight: 700;
+}
+
+/* Mode Guitare Live */
+.live-guitar-status {
+    padding: 20px;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.live-guitar-status.hidden {
+    display: none;
+}
+
+.mic-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #ffffff;
+}
+
+.mic-icon {
+    font-size: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.mic-indicator.active .mic-icon {
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.mic-indicator.active .mic-text {
+    color: #2ECC71;
+    font-weight: 700;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+.detected-note {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #5B9BD5;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detected-note.correct {
+    color: #2ECC71;
+    background: rgba(46, 204, 113, 0.2);
+}
+
+.detected-note.wrong {
+    color: #E74C3C;
+    background: rgba(231, 76, 60, 0.2);
+}
+
+.live-guitar-status {
+    padding: 20px;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.live-guitar-status.hidden {
+    display: none;
+}
+
+.mic-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #ffffff;
+}
+
+.mic-icon {
+    font-size: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.mic-indicator.active .mic-icon {
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.mic-indicator.active .mic-text {
+    color: #2ECC71;
+    font-weight: 700;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+.detected-note {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #5B9BD5;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detected-note.correct {
+    color: #2ECC71;
+    background: rgba(46, 204, 113, 0.2);
+}
+
+.detected-note.wrong {
+    color: #E74C3C;
+    background: rgba(231, 76, 60, 0.2);
 }
 
 
