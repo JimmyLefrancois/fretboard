@@ -10,109 +10,113 @@
     <div class="container">
         <h1>Apprendre les Notes du Manche de Guitare</h1>
         
+        <div class="controls">
+            <button id="toggleNotes" class="btn-toggle">Afficher les notes</button>
+        </div>
+        
         <div class="fretboard-container">
             <table class="fretboard">
                 <tbody>
                     <!-- Corde Mi aigu (e) -->
                     <tr class="string" data-string="e">
                         <td class="string-label">E (mi)</td>
-                        <td class="fret" data-fret="1"></td>
-                        <td class="fret" data-fret="2"></td>
-                        <td class="fret" data-fret="3"></td>
-                        <td class="fret" data-fret="4"></td>
-                        <td class="fret" data-fret="5"></td>
-                        <td class="fret" data-fret="6"></td>
-                        <td class="fret" data-fret="7"></td>
-                        <td class="fret" data-fret="8"></td>
-                        <td class="fret" data-fret="9"></td>
-                        <td class="fret" data-fret="10"></td>
-                        <td class="fret" data-fret="11"></td>
-                        <td class="fret"  data-fret="12"></td>
+                        <td class="fret" data-fret="1" data-note="F"><span class="note">F</span></td>
+                        <td class="fret" data-fret="2" data-note="F#"><span class="note">F#</span></td>
+                        <td class="fret" data-fret="3" data-note="G"><span class="note">G</span></td>
+                        <td class="fret" data-fret="4" data-note="G#"><span class="note">G#</span></td>
+                        <td class="fret" data-fret="5" data-note="A"><span class="note">A</span></td>
+                        <td class="fret" data-fret="6" data-note="A#"><span class="note">A#</span></td>
+                        <td class="fret" data-fret="7" data-note="B"><span class="note">B</span></td>
+                        <td class="fret" data-fret="8" data-note="C"><span class="note">C</span></td>
+                        <td class="fret" data-fret="9" data-note="C#"><span class="note">C#</span></td>
+                        <td class="fret" data-fret="10" data-note="D"><span class="note">D</span></td>
+                        <td class="fret" data-fret="11" data-note="D#"><span class="note">D#</span></td>
+                        <td class="fret"  data-fret="12" data-note="E"><span class="note">E</span></td>
                     </tr>
                     
                     <!-- Corde Si (B) -->
                     <tr class="string" data-string="B">
                         <td class="string-label">B (si)</td>
-                        <td class="fret" data-fret="1"></td>
-                        <td class="fret" data-fret="2"></td>
-                        <td class="fret" data-fret="3"></td>
-                        <td class="fret" data-fret="4"></td>
-                        <td class="fret" data-fret="5"></td>
-                        <td class="fret" data-fret="6"></td>
-                        <td class="fret" data-fret="7"></td>
-                        <td class="fret" data-fret="8"></td>
-                        <td class="fret" data-fret="9"></td>
-                        <td class="fret" data-fret="10"></td>
-                        <td class="fret" data-fret="11"></td>
-                        <td class="fret marker-12" data-fret="12"></td>
+                        <td class="fret" data-fret="1" data-note="C"><span class="note">C</span></td>
+                        <td class="fret" data-fret="2" data-note="C#"><span class="note">C#</span></td>
+                        <td class="fret" data-fret="3" data-note="D"><span class="note">D</span></td>
+                        <td class="fret" data-fret="4" data-note="D#"><span class="note">D#</span></td>
+                        <td class="fret" data-fret="5" data-note="E"><span class="note">E</span></td>
+                        <td class="fret" data-fret="6" data-note="F"><span class="note">F</span></td>
+                        <td class="fret" data-fret="7" data-note="F#"><span class="note">F#</span></td>
+                        <td class="fret" data-fret="8" data-note="G"><span class="note">G</span></td>
+                        <td class="fret" data-fret="9" data-note="G#"><span class="note">G#</span></td>
+                        <td class="fret" data-fret="10" data-note="A"><span class="note">A</span></td>
+                        <td class="fret" data-fret="11" data-note="A#"><span class="note">A#</span></td>
+                        <td class="fret marker-12" data-fret="12" data-note="B"><span class="note">B</span></td>
                     </tr>
                     
                     <!-- Corde Sol (G) -->
                     <tr class="string" data-string="G">
                         <td class="string-label">G (sol)</td>
-                        <td class="fret" data-fret="1"></td>
-                        <td class="fret" data-fret="2"></td>
-                        <td class="fret" data-fret="3"></td>
-                        <td class="fret" data-fret="4"></td>
-                        <td class="fret" data-fret="5"></td>
-                        <td class="fret" data-fret="6"></td>
-                        <td class="fret" data-fret="7"></td>
-                        <td class="fret" data-fret="8"></td>
-                        <td class="fret" data-fret="9"></td>
-                        <td class="fret" data-fret="10"></td>
-                        <td class="fret" data-fret="11"></td>
-                        <td class="fret" data-fret="12"></td>
+                        <td class="fret" data-fret="1" data-note="G#"><span class="note">G#</span></td>
+                        <td class="fret" data-fret="2" data-note="A"><span class="note">A</span></td>
+                        <td class="fret" data-fret="3" data-note="A#"><span class="note">A#</span></td>
+                        <td class="fret" data-fret="4" data-note="B"><span class="note">B</span></td>
+                        <td class="fret" data-fret="5" data-note="C"><span class="note">C</span></td>
+                        <td class="fret" data-fret="6" data-note="C#"><span class="note">C#</span></td>
+                        <td class="fret" data-fret="7" data-note="D"><span class="note">D</span></td>
+                        <td class="fret" data-fret="8" data-note="D#"><span class="note">D#</span></td>
+                        <td class="fret" data-fret="9" data-note="E"><span class="note">E</span></td>
+                        <td class="fret" data-fret="10" data-note="F"><span class="note">F</span></td>
+                        <td class="fret" data-fret="11" data-note="F#"><span class="note">F#</span></td>
+                        <td class="fret" data-fret="12" data-note="G"><span class="note">G</span></td>
                     </tr>
                     
                     <!-- Corde Ré (D) -->
                     <tr class="string" data-string="D">
                         <td class="string-label">D (ré)</td>
-                        <td class="fret" data-fret="1"></td>
-                        <td class="fret" data-fret="2"></td>
-                        <td class="fret marker-3" data-fret="3"></td>
-                        <td class="fret" data-fret="4"></td>
-                        <td class="fret marker-5" data-fret="5"></td>
-                        <td class="fret" data-fret="6"></td>
-                        <td class="fret marker-7" data-fret="7"></td>
-                        <td class="fret" data-fret="8"></td>
-                        <td class="fret marker-9" data-fret="9"></td>
-                        <td class="fret" data-fret="10"></td>
-                        <td class="fret" data-fret="11"></td>
-                        <td class="fret" data-fret="12"></td>
+                        <td class="fret" data-fret="1" data-note="D#"><span class="note">D#</span></td>
+                        <td class="fret" data-fret="2" data-note="E"><span class="note">E</span></td>
+                        <td class="fret marker-3" data-fret="3" data-note="F"><span class="note">F</span></td>
+                        <td class="fret" data-fret="4" data-note="F#"><span class="note">F#</span></td>
+                        <td class="fret marker-5" data-fret="5" data-note="G"><span class="note">G</span></td>
+                        <td class="fret" data-fret="6" data-note="G#"><span class="note">G#</span></td>
+                        <td class="fret marker-7" data-fret="7" data-note="A"><span class="note">A</span></td>
+                        <td class="fret" data-fret="8" data-note="A#"><span class="note">A#</span></td>
+                        <td class="fret marker-9" data-fret="9" data-note="B"><span class="note">B</span></td>
+                        <td class="fret" data-fret="10" data-note="C"><span class="note">C</span></td>
+                        <td class="fret" data-fret="11" data-note="C#"><span class="note">C#</span></td>
+                        <td class="fret" data-fret="12" data-note="D"><span class="note">D</span></td>
                     </tr>
                     
                     <!-- Corde La (A) -->
                     <tr class="string" data-string="A">
                         <td class="string-label">A (la)</td>
-                        <td class="fret" data-fret="1"></td>
-                        <td class="fret" data-fret="2"></td>
-                        <td class="fret" data-fret="3"></td>
-                        <td class="fret" data-fret="4"></td>
-                        <td class="fret" data-fret="5"></td>
-                        <td class="fret" data-fret="6"></td>
-                        <td class="fret" data-fret="7"></td>
-                        <td class="fret" data-fret="8"></td>
-                        <td class="fret" data-fret="9"></td>
-                        <td class="fret" data-fret="10"></td>
-                        <td class="fret" data-fret="11"></td>
-                        <td class="fret marker-12" data-fret="12"></td>
+                        <td class="fret" data-fret="1" data-note="A#"><span class="note">A#</span></td>
+                        <td class="fret" data-fret="2" data-note="B"><span class="note">B</span></td>
+                        <td class="fret" data-fret="3" data-note="C"><span class="note">C</span></td>
+                        <td class="fret" data-fret="4" data-note="C#"><span class="note">C#</span></td>
+                        <td class="fret" data-fret="5" data-note="D"><span class="note">D</span></td>
+                        <td class="fret" data-fret="6" data-note="D#"><span class="note">D#</span></td>
+                        <td class="fret" data-fret="7" data-note="E"><span class="note">E</span></td>
+                        <td class="fret" data-fret="8" data-note="F"><span class="note">F</span></td>
+                        <td class="fret" data-fret="9" data-note="F#"><span class="note">F#</span></td>
+                        <td class="fret" data-fret="10" data-note="G"><span class="note">G</span></td>
+                        <td class="fret" data-fret="11" data-note="G#"><span class="note">G#</span></td>
+                        <td class="fret marker-12" data-fret="12" data-note="A"><span class="note">A</span></td>
                     </tr>
                     
                     <!-- Corde Mi grave (E) -->
                     <tr class="string" data-string="E">
                         <td class="string-label">E (mi)</td>
-                        <td class="fret" data-fret="1"></td>
-                        <td class="fret" data-fret="2"></td>
-                        <td class="fret" data-fret="3"></td>
-                        <td class="fret" data-fret="4"></td>
-                        <td class="fret" data-fret="5"></td>
-                        <td class="fret" data-fret="6"></td>
-                        <td class="fret" data-fret="7"></td>
-                        <td class="fret" data-fret="8"></td>
-                        <td class="fret" data-fret="9"></td>
-                        <td class="fret" data-fret="10"></td>
-                        <td class="fret" data-fret="11"></td>
-                        <td class="fret" data-fret="12"></td>
+                        <td class="fret" data-fret="1" data-note="F"><span class="note">F</span></td>
+                        <td class="fret" data-fret="2" data-note="F#"><span class="note">F#</span></td>
+                        <td class="fret" data-fret="3" data-note="G"><span class="note">G</span></td>
+                        <td class="fret" data-fret="4" data-note="G#"><span class="note">G#</span></td>
+                        <td class="fret" data-fret="5" data-note="A"><span class="note">A</span></td>
+                        <td class="fret" data-fret="6" data-note="A#"><span class="note">A#</span></td>
+                        <td class="fret" data-fret="7" data-note="B"><span class="note">B</span></td>
+                        <td class="fret" data-fret="8" data-note="C"><span class="note">C</span></td>
+                        <td class="fret" data-fret="9" data-note="C#"><span class="note">C#</span></td>
+                        <td class="fret" data-fret="10" data-note="D"><span class="note">D</span></td>
+                        <td class="fret" data-fret="11" data-note="D#"><span class="note">D#</span></td>
+                        <td class="fret" data-fret="12" data-note="E"><span class="note">E</span></td>
                     </tr>
                 </tbody>
                 
@@ -136,5 +140,7 @@
             </table>
         </div>
     </div>
+    
+    <script src="script.js"></script>
 </body>
 </html>
