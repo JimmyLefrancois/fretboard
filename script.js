@@ -1042,9 +1042,8 @@ document.addEventListener('DOMContentLoaded', function() {
             detectedNoteElement.classList.add('correct');
             detectedNoteElement.classList.remove('wrong');
             
-            score++;
-            streak++;
-            updateScore();
+            // En mode live guitar, pas de score ni streak (on cherche juste la bonne note)
+            // Pas de mise à jour des stats
             
             // Jouer le son de notification
             playSuccessSound();

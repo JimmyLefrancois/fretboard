@@ -741,6 +741,11 @@ h1 {
     flex-wrap: wrap;
 }
 
+/* Cacher les stats en mode Live Guitar (on cherche juste la bonne note) */
+.game-mode-live-guitar .game-stats {
+    display: none;
+}
+
 .stat {
     font-size: 1.1rem;
     color: #24292f;
