@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Application interactive pour apprendre les notes sur le manche de guitare. Entraînement, quiz et détection audio en temps réel.">
+    <meta name="keywords" content="guitare, manche, notes, apprentissage, musique, solfège">
+    <meta name="author" content="Jimmy Lefrancois">
     <title>Apprendre les Notes sur le Manche de Guitare</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -16,9 +19,9 @@
             <div class="sidebar-section">
                 <h3>Mode de jeu</h3>
                 <div class="mode-buttons">
-                    <button class="btn-mode" data-mode="practice">Entraînement libre</button>
-                    <button class="btn-mode" data-mode="live-guitar">🎸 Guitare Live</button>
-                    <button class="btn-mode active" data-mode="find-note">Trouver la note</button>
+                    <button class="btn-mode" data-mode="practice" aria-label="Mode entraînement libre">Entraînement libre</button>
+                    <button class="btn-mode" data-mode="live-guitar" aria-label="Mode guitare live avec détection audio">🎸 Guitare Live</button>
+                    <button class="btn-mode active" data-mode="find-note" aria-label="Mode trouver la note">Trouver la note</button>
                 </div>
             </div>
             
@@ -44,7 +47,7 @@
             <!-- Sélection des cordes -->
             <div class="sidebar-section">
                 <h3>Cordes</h3>
-                <button id="toggleAllStrings" class="btn-toggle-all">Tout décocher</button>
+                <button id="toggleAllStrings" class="btn-toggle-all" aria-label="Cocher ou décocher toutes les cordes">Tout décocher</button>
                 <div class="string-filter">
                     <label class="string-option">
                         <input type="checkbox" name="string" value="e" checked>
@@ -76,8 +79,8 @@
             <!-- Affichage -->
             <div class="sidebar-section">
                 <h3>Affichage</h3>
-                <button id="toggleNotes" class="btn-sidebar">Afficher les notes</button>
-                <button id="toggleNotation" class="btn-sidebar">Notation internationale</button>
+                <button id="toggleNotes" class="btn-sidebar" aria-label="Afficher ou cacher les notes sur le manche">Afficher les notes</button>
+                <button id="toggleNotation" class="btn-sidebar" aria-label="Basculer entre notation française et internationale">Notation internationale</button>
             </div>
             
             <!-- Bouton commencer (visible uniquement sur mobile) -->
@@ -157,9 +160,9 @@
                         <td class="fret" data-string="B" data-fret="7" data-note-int="F#" data-note-fr="Fa#" data-type="sharp"><span class="note">Fa#</span></td>
                         <td class="fret" data-string="B" data-fret="8" data-note-int="G" data-note-fr="Sol" data-type="natural"><span class="note">Sol</span></td>
                         <td class="fret" data-string="B" data-fret="9" data-note-int="G#" data-note-fr="Sol#" data-type="sharp"><span class="note">Sol#</span></td>
-                        <td class="fret" data-fret="10" data-note-int="A" data-note-fr="La" data-type="natural"><span class="note">La</span></td>
-                        <td class="fret" data-fret="11" data-note-int="A#" data-note-fr="La#" data-type="sharp"><span class="note">La#</span></td>
-                        <td class="fret marker-12" data-fret="12" data-note-int="B" data-note-fr="Si" data-type="natural"><span class="note">Si</span></td>
+                        <td class="fret" data-string="B" data-fret="10" data-note-int="A" data-note-fr="La" data-type="natural"><span class="note">La</span></td>
+                        <td class="fret" data-string="B" data-fret="11" data-note-int="A#" data-note-fr="La#" data-type="sharp"><span class="note">La#</span></td>
+                        <td class="fret marker-12" data-string="B" data-fret="12" data-note-int="B" data-note-fr="Si" data-type="natural"><span class="note">Si</span></td>
                     </tr>
                     
                     <!-- Corde Sol (G) -->
