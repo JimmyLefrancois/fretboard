@@ -78,14 +78,13 @@ h1 {
     color: #f0f2f3;
     background: rgba(0, 0, 0, 0.2);
     border-right: 2px solid #8B7355;
-    min-width: 80px;
+    width: 80px;
     font-size: 0.95rem;
 }
 
-/* Cases (frettes) */
+/* Cases (frettes) - largeur progressive selon la règle des 18 */
 .fret {
     position: relative;
-    width: 70px;
     height: 60px;
     background: linear-gradient(to right, #6B5444 0%, #8B7355 50%, #6B5444 100%);
     border-right: 3px solid #333333;
@@ -93,6 +92,20 @@ h1 {
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
+/* Largeurs spécifiques pour chaque frette (basé sur la règle des 18) */
+.fret[data-fret="1"] { width: 95px; }
+.fret[data-fret="2"] { width: 90px; }
+.fret[data-fret="3"] { width: 85px; }
+.fret[data-fret="4"] { width: 80px; }
+.fret[data-fret="5"] { width: 75px; }
+.fret[data-fret="6"] { width: 71px; }
+.fret[data-fret="7"] { width: 67px; }
+.fret[data-fret="8"] { width: 63px; }
+.fret[data-fret="9"] { width: 60px; }
+.fret[data-fret="10"] { width: 56px; }
+.fret[data-fret="11"] { width: 53px; }
+.fret[data-fret="12"] { width: 50px; }
 
 .fret:hover {
     background: linear-gradient(to right, #7B6454 0%, #9B8365 50%, #7B6454 100%);
@@ -159,15 +172,39 @@ h1 {
 
 /* Responsive */
 @media (max-width: 1200px) {
+    .fret[data-fret="1"] { width: 75px; }
+    .fret[data-fret="2"] { width: 71px; }
+    .fret[data-fret="3"] { width: 67px; }
+    .fret[data-fret="4"] { width: 63px; }
+    .fret[data-fret="5"] { width: 59px; }
+    .fret[data-fret="6"] { width: 56px; }
+    .fret[data-fret="7"] { width: 53px; }
+    .fret[data-fret="8"] { width: 50px; }
+    .fret[data-fret="9"] { width: 47px; }
+    .fret[data-fret="10"] { width: 44px; }
+    .fret[data-fret="11"] { width: 42px; }
+    .fret[data-fret="12"] { width: 40px; }
+    
     .fret {
-        width: 60px;
         height: 50px;
     }
     
     .string {
         height: 50px;
-    }
-}
+    }[data-fret="1"] { width: 55px; }
+    .fret[data-fret="2"] { width: 52px; }
+    .fret[data-fret="3"] { width: 49px; }
+    .fret[data-fret="4"] { width: 46px; }
+    .fret[data-fret="5"] { width: 44px; }
+    .fret[data-fret="6"] { width: 41px; }
+    .fret[data-fret="7"] { width: 39px; }
+    .fret[data-fret="8"] { width: 37px; }
+    .fret[data-fret="9"] { width: 35px; }
+    .fret[data-fret="10"] { width: 33px; }
+    .fret[data-fret="11"] { width: 31px; }
+    .fret[data-fret="12"] { width: 29px; }
+    
+    .fret {
 
 @media (max-width: 768px) {
     .container {
