@@ -498,6 +498,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Mettre à jour l'affichage des options
         updateOptionsDisplay();
         
+        // Mettre à jour le texte du dropdown des cordes
+        updateTriggerText();
+        
         // Sauvegarder les options
         saveGameOptions();
     });
