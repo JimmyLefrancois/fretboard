@@ -7,52 +7,63 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Apprendre les Notes du Manche de Guitare</h1>
-        
-        <!-- Sélection du mode de jeu -->
-        <div class="game-mode-selector">
-            <h2>Mode de jeu</h2>
-            <div class="mode-buttons">
-                <button class="btn-mode" data-mode="practice">Entraînement libre</button>
-                <button class="btn-mode active" data-mode="find-note">Trouver la note</button>
+    <div class="app-layout">
+        <!-- Sidebar gauche -->
+        <aside class="sidebar">
+            <h2 class="sidebar-title">Paramètres</h2>
+            
+            <!-- Mode de jeu -->
+            <div class="sidebar-section">
+                <h3>Mode de jeu</h3>
+                <div class="mode-buttons">
+                    <button class="btn-mode" data-mode="practice">Entraînement libre</button>
+                    <button class="btn-mode active" data-mode="find-note">Trouver la note</button>
+                </div>
             </div>
-        </div>
-        
-        <div class="controls">
-            <button id="toggleNotes" class="btn-toggle">Afficher les notes</button>
-            <button id="toggleNotation" class="btn-toggle">Notation internationale</button>
-        </div>
-
-        <!-- Zone de jeu -->
-        <div class="game-area" id="gameArea">
-            <div class="game-options">
+            
+            <!-- Type de notes -->
+            <div class="sidebar-section">
                 <h3>Type de notes</h3>
                 <div class="note-type-filter">
                     <label class="filter-option">
                         <input type="radio" name="noteType" value="both" checked>
-                        <span>Toutes les notes</span>
+                        <span>Toutes</span>
                     </label>
                     <label class="filter-option">
                         <input type="radio" name="noteType" value="natural">
-                        <span>Notes naturelles uniquement</span>
+                        <span>Naturelles</span>
                     </label>
                     <label class="filter-option">
                         <input type="radio" name="noteType" value="sharp">
-                        <span>Notes altérées uniquement</span>
+                        <span>Altérées</span>
                     </label>
                 </div>
             </div>
             
-            <div class="game-info">
-                <div class="question" id="question">Cliquez sur "Nouvelle question" pour commencer</div>
-                <div class="game-stats">
-                    <span class="stat">Score : <strong id="score">0</strong></span>
-                    <span class="stat">Streak : <strong id="streak">0</strong> 🔥</span>
-                </div>
+            <!-- Affichage -->
+            <div class="sidebar-section">
+                <h3>Affichage</h3>
+                <button id="toggleNotes" class="btn-sidebar">Afficher les notes</button>
+                <button id="toggleNotation" class="btn-sidebar">Notation internationale</button>
             </div>
-            <button id="newQuestion" class="btn-primary">Nouvelle question</button>
-        </div>
+        </aside>
+        
+        <!-- Contenu principal -->
+        <main class="main-content">
+            <div class="container">
+                <h1>Apprendre les Notes du Manche de Guitare</h1>
+
+                <!-- Zone de jeu -->
+                <div class="game-area" id="gameArea">
+                    <div class="game-info">
+                        <div class="question" id="question">Cliquez sur "Nouvelle question" pour commencer</div>
+                        <div class="game-stats">
+                            <span class="stat">Score : <strong id="score">0</strong></span>
+                            <span class="stat">Streak : <strong id="streak">0</strong> 🔥</span>
+                        </div>
+                    </div>
+                    <button id="newQuestion" class="btn-primary">Nouvelle question</button>
+                </div>
         
         <div class="fretboard-container">
             <table class="fretboard">
@@ -179,6 +190,8 @@
                 </tfoot>
             </table>
         </div>
+            </div>
+        </main>
     </div>
     
     <script src="script.js"></script>

@@ -9,12 +9,55 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #E6F2FF 0%, #F5F7FA 100%);
     min-height: 100vh;
-    padding: 20px;
     color: #24292f;
 }
 
+/* Layout principal avec sidebar */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+    padding: 25px 20px;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.sidebar-title {
+    color: #ffffff;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-section {
+    margin-bottom: 30px;
+}
+
+.sidebar-section h3 {
+    color: #E6F2FF;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+/* Contenu principal */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-x: auto;
+}
+
 .container {
-    max-width: 1400px;
+    max-width: 100%;
     margin: 0 auto;
     background-color: #ffffff;
     padding: 30px;
@@ -25,8 +68,105 @@ body {
 h1 {
     text-align: center;
     color: #1f2328;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     font-size: 2rem;
+}
+
+/* Boutons de la sidebar */
+.btn-sidebar {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #5B9BD5 0%, #3A7BC8 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn-sidebar:hover {
+    background: linear-gradient(135deg, #4A8AC4 0%, #2966B7 100%);
+    transform: translateX(5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Boutons de mode dans la sidebar */
+.mode-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-mode {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-mode:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateX(5px);
+}
+
+.btn-mode.active {
+    background: linear-gradient(135deg, #5B9BD5 0%, #3A7BC8 100%);
+    border-color: #5B9BD5;
+    box-shadow: 0 4px 10px rgba(91, 155, 213, 0.4);
+}
+
+/* Filtres de type de notes dans la sidebar */
+.note-type-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.filter-option:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.filter-option input[type="radio"] {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    accent-color: #5B9BD5;
+}
+
+.filter-option span {
+    font-size: 0.95rem;
+    color: #E6F2FF;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.filter-option input[type="radio"]:checked + span {
+    color: #ffffff;
+    font-weight: 700;
 }
 
 /* Sélection du mode de jeu */
