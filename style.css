@@ -1091,7 +1091,7 @@ h1 {
 }
 
 .btn-start-game:hover {
-    background: linear-gradient(135deg, #A33529 0%, #8B2A1F 100%);
+    background: linear-gradient(135deg, #9FC131 0%, #8AB028 100%);
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(191, 63, 52, 0.5);
 }
