@@ -756,7 +756,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Récupérer les infos
         const targetNote = frenchNotation ? randomFret.dataset.noteFr : randomFret.dataset.noteInt;
         const targetString = randomFret.closest('.string').dataset.string;
-        const stringName = frenchNotation ? stringNames[targetString].fr : stringNames[targetString].int;
+        // Utiliser la langue actuelle pour le nom de la corde (pas la notation)
+        const stringName = currentLanguage === 'fr' ? stringNames[targetString].fr : stringNames[targetString].int;
         
         currentQuestion = {
             note: targetNote,
