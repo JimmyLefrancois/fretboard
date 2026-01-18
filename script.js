@@ -27,6 +27,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let pitchDetectionInterval = null;
     let isListening = false;
     
+    // Constantes pour la détection audio
+    const AUDIO_CONFIG = {
+        FFT_SIZE: 4096,
+        DETECTION_INTERVAL_MS: 100,
+        MIN_RMS_THRESHOLD: 0.01,
+        MIN_CORRELATION: 0.9,
+        MIN_CORRELATION_QUALITY: 0.01
+    };
+    
     // Pré-charger le son de notification
     const successSound = new Audio('sounds/bell.mp3');
     successSound.volume = 0.7;
@@ -39,26 +48,40 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fonctions de gestion du localStorage
     function saveGameOptions() {
-        const options = {
-            noteTypeFilter: noteTypeFilter,
-            stringFilter: stringFilter,
-            frenchNotation: frenchNotation,
-            currentMode: currentMode
-        };
-        localStorage.setItem('guitarGameOptions', JSON.stringify(options));
-        console.log('Options sauvegardées:', options);
+        try {
+            const options = {
+                noteTypeFilter: noteTypeFilter,
+                stringFilter: stringFilter,
+                frenchNotation: frenchNotation,
+                currentMode: currentMode
+            };
+            localStorage.setItem('guitarGameOptions', JSON.stringify(options));
+        } catch (e) {
+            // Quota dépassé ou localStorage désactivé
+            console.warn('Impossible de sauvegarder les options:', e);
+        }
     }
     
     function loadGameOptions() {
-        const saved = localStorage.getItem('guitarGameOptions');
-        if (saved) {
-            try {
+        try {
+            const saved = localStorage.getItem('guitarGameOptions');
+            if (saved) {
                 const options = JSON.parse(saved);
-                console.log('Options chargées:', options);
-                return options;
-            } catch (e) {
-                console.error('Erreur lors du chargement des options:', e);
+                // Valider les données
+                if (options && typeof options === 'object') {
+                    // Valider stringFilter
+                    if (Array.isArray(options.stringFilter)) {
+                        const validStrings = ['e', 'B', 'G', 'D', 'A', 'E'];
+                        options.stringFilter = options.stringFilter.filter(s => validStrings.includes(s));
+                        if (options.stringFilter.length === 0) {
+                            options.stringFilter = validStrings;
+                        }
+                    }
+                    return options;
+                }
             }
+        } catch (e) {
+            console.warn('Erreur lors du chargement des options:', e);
         }
         return null;
     }
@@ -100,6 +123,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     console.log('Initialisation - Filtre type:', noteTypeFilter, 'Filtre cordes:', stringFilter);
+    
+    // Fonction utilitaire pour mettre à jour le filtre de cordes
+    function updateStringFilterFromCheckboxes() {
+        return Array.from(document.querySelectorAll('input[name="string"]:checked'))
+            .map(cb => cb.value);
+    }
 
     // Éléments pour le récapitulatif des options
     const optionModeElement = document.getElementById('optionMode');
@@ -208,7 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Changer le mode
             currentMode = this.dataset.mode;
-            console.log('Changement de mode vers:', currentMode);
             
             // Mettre à jour l'interface
             updateGameMode();
@@ -224,7 +252,6 @@ document.addEventListener('DOMContentLoaded', function() {
     noteTypeRadios.forEach(radio => {
         const updateFilter = function() {
             noteTypeFilter = radio.value;
-            console.log('Filtre de type de notes changé:', noteTypeFilter);
             updateOptionsDisplay();
             saveGameOptions();
             // Si une question est en cours, en générer une nouvelle avec le nouveau filtre
@@ -268,8 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Mettre à jour le filtre
-            stringFilter = Array.from(document.querySelectorAll('input[name="string"]:checked'))
-                .map(cb => cb.value);
+            stringFilter = updateStringFilterFromCheckboxes();
             updateOptionsDisplay();
             saveGameOptions();
             
@@ -282,8 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
     stringCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             // Mettre à jour le tableau des cordes sélectionnées
-            stringFilter = Array.from(document.querySelectorAll('input[name="string"]:checked'))
-                .map(cb => cb.value);
+            stringFilter = updateStringFilterFromCheckboxes();
             
             // Si aucune corde n'est sélectionnée, empêcher la désélection de toutes
             if (stringFilter.length === 0) {
@@ -346,8 +371,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (fretboardContainer) fretboardContainer.style.display = 'none'; // Cacher le fretboard
             resetGame();
             
-            console.log('Mode Guitare Live - En attente du démarrage...');
-            
             // Ne pas démarrer automatiquement, attendre le clic sur le bouton
         }
         
@@ -393,21 +416,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Récupérer toutes les cases
         let allFrets = Array.from(document.querySelectorAll('.fret'));
         
-        console.log('Génération question - Filtre type:', noteTypeFilter, 'Filtre cordes:', stringFilter);
-        console.log('Nombre de frets avant filtrage:', allFrets.length);
-        
         // Filtrer selon le type de notes sélectionné
         if (noteTypeFilter === 'natural') {
             allFrets = allFrets.filter(fret => fret.dataset.type === 'natural');
-            console.log('Après filtre natural:', allFrets.length);
         } else if (noteTypeFilter === 'sharp') {
             allFrets = allFrets.filter(fret => fret.dataset.type === 'sharp');
-            console.log('Après filtre sharp:', allFrets.length);
         }
         
         // Filtrer selon les cordes sélectionnées
         allFrets = allFrets.filter(fret => stringFilter.includes(fret.dataset.string));
-        console.log('Après filtre cordes:', allFrets.length);
         
         // Vérifier qu'il y a des cases disponibles
         if (allFrets.length === 0) {
@@ -533,23 +550,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fonction wrapper pour démarrer le micro en mode live
     async function startMicrophoneForLiveMode() {
-        console.log('Demande d\'accès au microphone...');
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            console.log('Accès au microphone accordé !');
             
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioContext.createAnalyser();
             microphone = audioContext.createMediaStreamSource(stream);
             
-            analyser.fftSize = 4096;
+            analyser.fftSize = AUDIO_CONFIG.FFT_SIZE;
             microphone.connect(analyser);
             
             isListening = true;
             updateMicStatus(true);
             
             // Démarrer la détection de pitch
-            pitchDetectionInterval = setInterval(detectPitch, 100);
+            pitchDetectionInterval = setInterval(detectPitch, AUDIO_CONFIG.DETECTION_INTERVAL_MS);
             
             // Générer la première question
             generateQuestion();
@@ -576,7 +591,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fonction pour arrêter l'écoute
-    function stopMicrophone() {
+    async function stopMicrophone() {
         if (pitchDetectionInterval) {
             clearInterval(pitchDetectionInterval);
             pitchDetectionInterval = null;
@@ -587,8 +602,12 @@ document.addEventListener('DOMContentLoaded', function() {
             microphone = null;
         }
         
-        if (audioContext) {
-            audioContext.close();
+        if (audioContext && audioContext.state !== 'closed') {
+            try {
+                await audioContext.close();
+            } catch (e) {
+                console.warn('Erreur lors de la fermeture de l\'AudioContext:', e);
+            }
             audioContext = null;
         }
         
@@ -646,7 +665,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rms = Math.sqrt(rms / SIZE);
 
         // Pas assez de signal
-        if (rms < 0.01) return -1;
+        if (rms < AUDIO_CONFIG.MIN_RMS_THRESHOLD) return -1;
 
         // Trouver le pic de corrélation
         let lastCorrelation = 1;
@@ -659,7 +678,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             correlation = 1 - (correlation / MAX_SAMPLES);
 
-            if (correlation > 0.9 && correlation > lastCorrelation) {
+            if (correlation > AUDIO_CONFIG.MIN_CORRELATION && correlation > lastCorrelation) {
                 const foundGoodCorrelation = correlation > best_correlation;
                 if (foundGoodCorrelation) {
                     best_correlation = correlation;
@@ -670,7 +689,7 @@ document.addEventListener('DOMContentLoaded', function() {
             lastCorrelation = correlation;
         }
 
-        if (best_correlation > 0.01) {
+        if (best_correlation > AUDIO_CONFIG.MIN_CORRELATION_QUALITY) {
             return sampleRate / best_offset;
         }
 
