@@ -15,8 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const detectedNoteElement = document.getElementById('detectedNote');
     
     let notesVisible = false;
-    let frenchNotation = true; // Par défaut, notation française
-    let currentMode = 'find-note';
     let currentQuestion = null;
     let score = 0;
     let streak = 0;
@@ -39,11 +37,66 @@ document.addEventListener('DOMContentLoaded', function() {
         successSound.play().catch(err => console.log('Erreur lecture audio:', err));
     }
     
-    // Initialiser les filtres en lisant l'état actuel des formulaires
-    let noteTypeFilter = document.querySelector('input[name="noteType"]:checked')?.value || 'both';
-    let stringFilter = Array.from(document.querySelectorAll('input[name="string"]:checked')).map(cb => cb.value);
+    // Fonctions de gestion du localStorage
+    function saveGameOptions() {
+        const options = {
+            noteTypeFilter: noteTypeFilter,
+            stringFilter: stringFilter,
+            frenchNotation: frenchNotation,
+            currentMode: currentMode
+        };
+        localStorage.setItem('guitarGameOptions', JSON.stringify(options));
+        console.log('Options sauvegardées:', options);
+    }
+    
+    function loadGameOptions() {
+        const saved = localStorage.getItem('guitarGameOptions');
+        if (saved) {
+            try {
+                const options = JSON.parse(saved);
+                console.log('Options chargées:', options);
+                return options;
+            } catch (e) {
+                console.error('Erreur lors du chargement des options:', e);
+            }
+        }
+        return null;
+    }
+    
+    // Charger les options sauvegardées
+    const savedOptions = loadGameOptions();
+    
+    // Initialiser les filtres en lisant l'état actuel des formulaires ou localStorage
+    let noteTypeFilter = savedOptions?.noteTypeFilter || document.querySelector('input[name="noteType"]:checked')?.value || 'both';
+    let stringFilter = savedOptions?.stringFilter || Array.from(document.querySelectorAll('input[name="string"]:checked')).map(cb => cb.value);
     if (stringFilter.length === 0) {
         stringFilter = ['e', 'B', 'G', 'D', 'A', 'E']; // Toutes les cordes par défaut
+    }
+    let frenchNotation = savedOptions?.frenchNotation !== undefined ? savedOptions.frenchNotation : true;
+    let currentMode = savedOptions?.currentMode || 'find-note';
+    
+    // Appliquer les options sauvegardées aux formulaires
+    if (savedOptions) {
+        // Appliquer le filtre de type de notes
+        const noteTypeRadio = document.querySelector(`input[name="noteType"][value="${noteTypeFilter}"]`);
+        if (noteTypeRadio) noteTypeRadio.checked = true;
+        
+        // Appliquer le filtre de cordes
+        document.querySelectorAll('input[name="string"]').forEach(cb => {
+            cb.checked = stringFilter.includes(cb.value);
+        });
+        
+        // Appliquer le mode
+        const modeBtn = document.querySelector(`.btn-mode[data-mode="${currentMode}"]`);
+        if (modeBtn) {
+            document.querySelectorAll('.btn-mode').forEach(btn => btn.classList.remove('active'));
+            modeBtn.classList.add('active');
+        }
+        
+        // Appliquer la notation si elle est différente de française
+        if (!frenchNotation) {
+            toggleNotationButton.click();
+        }
     }
     
     console.log('Initialisation - Filtre type:', noteTypeFilter, 'Filtre cordes:', stringFilter);
@@ -139,6 +192,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Mettre à jour l'affichage des options
         updateOptionsDisplay();
+        
+        // Sauvegarder les options
+        saveGameOptions();
     });
 
     // Gestion des modes de jeu
@@ -157,6 +213,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Mettre à jour l'interface
             updateGameMode();
             updateOptionsDisplay();
+            
+            // Sauvegarder les options
+            saveGameOptions();
         });
     });
 
@@ -167,6 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
             noteTypeFilter = radio.value;
             console.log('Filtre de type de notes changé:', noteTypeFilter);
             updateOptionsDisplay();
+            saveGameOptions();
             // Si une question est en cours, en générer une nouvelle avec le nouveau filtre
             if (currentMode === 'find-note' && waitingForAnswer) {
                 generateQuestion();
@@ -211,6 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
             stringFilter = Array.from(document.querySelectorAll('input[name="string"]:checked'))
                 .map(cb => cb.value);
             updateOptionsDisplay();
+            saveGameOptions();
             
             if (waitingForAnswer) {
                 generateQuestion();
@@ -233,6 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Mettre à jour l'affichage des options
             updateOptionsDisplay();
+            saveGameOptions();
             
             // Générer une nouvelle question si on est en mode jeu
             if (waitingForAnswer) {
