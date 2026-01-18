@@ -1,5 +1,222 @@
+// =============================================================================
+// GESTION D'ERREURS GLOBALE ET UTILITAIRES DE PERFORMANCE
+// =============================================================================
+
+// Gestion d'erreurs globale
+window.addEventListener('error', (event) => {
+    console.error('❌ Erreur globale capturée:', event.error);
+    showErrorMessage('Une erreur est survenue. Veuillez recharger la page.');
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('❌ Promise non gérée:', event.reason);
+    showErrorMessage('Erreur de chargement. Vérifiez votre connexion.');
+});
+
+// Fonction pour afficher les erreurs à l'utilisateur
+function showErrorMessage(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-toast';
+    errorDiv.textContent = message;
+    errorDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c2c7 100%);
+        color: #842029;
+        padding: 16px 24px;
+        border-radius: 8px;
+        border-left: 4px solid #dc3545;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+        font-weight: 500;
+        max-width: 350px;
+        word-wrap: break-word;
+    `;
+    document.body.appendChild(errorDiv);
+    
+    setTimeout(() => {
+        errorDiv.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => errorDiv.remove(), 300);
+    }, 5000);
+}
+
+// Wrapper de sécurité pour les fonctions
+function safeExecute(fn, context = null, ...args) {
+    try {
+        return fn.apply(context, args);
+    } catch (error) {
+        console.error('❌ Erreur dans safeExecute:', error);
+        showErrorMessage('Une erreur est survenue lors de l\'exécution.');
+        return null;
+    }
+}
+
+// Cache pour les éléments DOM fréquemment utilisés
+const DOMCache = {
+    elements: new Map(),
+    
+    get(selector) {
+        if (!this.elements.has(selector)) {
+            const element = document.querySelector(selector);
+            if (!element) {
+                console.warn(`⚠️ Élément non trouvé: ${selector}`);
+                return null;
+            }
+            this.elements.set(selector, element);
+        }
+        return this.elements.get(selector);
+    },
+    
+    getAll(selector) {
+        const key = `all:${selector}`;
+        if (!this.elements.has(key)) {
+            const elements = document.querySelectorAll(selector);
+            if (elements.length === 0) {
+                console.warn(`⚠️ Aucun élément trouvé: ${selector}`);
+            }
+            this.elements.set(key, elements);
+        }
+        return this.elements.get(key);
+    },
+    
+    clear() {
+        this.elements.clear();
+    },
+    
+    invalidate(selector) {
+        this.elements.delete(selector);
+        this.elements.delete(`all:${selector}`);
+    }
+};
+
+// Debounce pour optimiser les événements fréquents
+function debounce(func, wait = 250) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Throttle pour limiter l'exécution
+function throttle(func, limit = 100) {
+    let inThrottle;
+    return function(...args) {
+        if (!inThrottle) {
+            func.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+// Validation des données
+function validateNote(note) {
+    const validNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B',
+                        'Do', 'Do#', 'Ré', 'Ré#', 'Mi', 'Fa', 'Fa#', 'Sol', 'Sol#', 'La', 'La#', 'Si'];
+    if (!validNotes.includes(note)) {
+        console.error(`❌ Note invalide: ${note}`);
+        return false;
+    }
+    return true;
+}
+
+function validateString(string) {
+    const validStrings = ['e', 'B', 'G', 'D', 'A', 'E'];
+    if (!validStrings.includes(string)) {
+        console.error(`❌ Corde invalide: ${string}`);
+        return false;
+    }
+    return true;
+}
+
+// Gestion du LocalStorage sécurisée
+const StorageManager = {
+    set(key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+            return true;
+        } catch (error) {
+            console.error('❌ Erreur LocalStorage set:', error);
+            return false;
+        }
+    },
+    
+    get(key, defaultValue = null) {
+        try {
+            const item = localStorage.getItem(key);
+            return item ? JSON.parse(item) : defaultValue;
+        } catch (error) {
+            console.error('❌ Erreur LocalStorage get:', error);
+            return defaultValue;
+        }
+    },
+    
+    remove(key) {
+        try {
+            localStorage.removeItem(key);
+            return true;
+        } catch (error) {
+            console.error('❌ Erreur LocalStorage remove:', error);
+            return false;
+        }
+    }
+};
+
+// Performance monitoring
+const PerformanceMonitor = {
+    marks: new Map(),
+    
+    start(label) {
+        this.marks.set(label, performance.now());
+    },
+    
+    end(label) {
+        if (this.marks.has(label)) {
+            const duration = performance.now() - this.marks.get(label);
+            console.log(`⏱️ ${label}: ${duration.toFixed(2)}ms`);
+            this.marks.delete(label);
+            return duration;
+        }
+    }
+};
+
+// Animations optimisées avec requestAnimationFrame
+function animateValue(element, newValue, duration = 300) {
+    if (!element) return;
+    
+    const currentValue = parseInt(element.textContent) || 0;
+    const startTime = performance.now();
+    
+    function animate(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        const value = Math.floor(currentValue + (newValue - currentValue) * progress);
+        element.textContent = value;
+        
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        }
+    }
+    
+    requestAnimationFrame(animate);
+}
+
+// =============================================================================
+// INITIALISATION DE L'APPLICATION
+// =============================================================================
+
 // Attendre que le DOM soit chargé
 document.addEventListener('DOMContentLoaded', function() {
+    PerformanceMonitor.start('AppInitialization');
+    
     // Système de traduction
     let currentLanguage = 'fr';
     
@@ -166,7 +383,7 @@ document.addEventListener('DOMContentLoaded', function() {
         MIN_CORRELATION_QUALITY: 0.01
     };
     
-    // Pré-charger le son de notification
+    // Pré-charger le son de notification avec gestion d'erreurs améliorée
     const successSound = new Audio('sounds/bell.mp3');
     successSound.volume = 0.7;
     let audioAvailable = true;
@@ -174,61 +391,56 @@ document.addEventListener('DOMContentLoaded', function() {
     // Vérifier si l'audio est disponible
     successSound.addEventListener('error', function() {
         audioAvailable = false;
-        console.warn('Son de notification non disponible');
+        console.warn('⚠️ Son de notification non disponible');
     });
     
-    // Fonction pour jouer un son de notification
-    function playSuccessSound() {
+    // Fonction pour jouer un son de notification (optimisée)
+    async function playSuccessSound() {
         if (!audioAvailable) return; // Fallback silencieux si audio indisponible
         
-        successSound.currentTime = 0;
-        successSound.play().catch(err => {
+        try {
+            successSound.currentTime = 0;
+            await successSound.play();
+        } catch (err) {
             audioAvailable = false;
-            console.warn('Impossible de jouer le son:', err);
-        });
+            console.warn('⚠️ Impossible de jouer le son:', err);
+        }
     }
     
-    // Fonctions de gestion du localStorage
+    // Fonctions de gestion du localStorage (optimisées avec StorageManager)
     function saveGameOptions() {
         if (isInitializing) return; // Ne pas sauvegarder pendant l'initialisation
         
-        try {
-            const options = {
-                noteTypeFilter: noteTypeFilter,
-                stringFilter: stringFilter,
-                frenchNotation: frenchNotation,
-                currentMode: currentMode,
-                language: currentLanguage,
-                soundEnabled: soundEnabled
-            };
-            localStorage.setItem('guitarGameOptions', JSON.stringify(options));
-        } catch (e) {
-            // Quota dépassé ou localStorage désactivé
-            console.warn('Impossible de sauvegarder les options:', e);
+        const options = {
+            noteTypeFilter: noteTypeFilter,
+            stringFilter: stringFilter,
+            frenchNotation: frenchNotation,
+            currentMode: currentMode,
+            language: currentLanguage,
+            soundEnabled: soundEnabled
+        };
+        
+        const success = StorageManager.set('guitarGameOptions', options);
+        if (!success) {
+            console.warn('⚠️ Impossible de sauvegarder les options');
         }
     }
     
     function loadGameOptions() {
-        try {
-            const saved = localStorage.getItem('guitarGameOptions');
-            if (saved) {
-                const options = JSON.parse(saved);
-                // Valider les données
-                if (options && typeof options === 'object') {
-                    // Valider stringFilter
-                    if (Array.isArray(options.stringFilter)) {
-                        const validStrings = ['e', 'B', 'G', 'D', 'A', 'E'];
-                        options.stringFilter = options.stringFilter.filter(s => validStrings.includes(s));
-                        if (options.stringFilter.length === 0) {
-                            options.stringFilter = validStrings;
-                        }
-                    }
-                    return options;
+        const options = StorageManager.get('guitarGameOptions');
+        
+        if (options && typeof options === 'object') {
+            // Valider stringFilter
+            if (Array.isArray(options.stringFilter)) {
+                const validStrings = ['e', 'B', 'G', 'D', 'A', 'E'];
+                options.stringFilter = options.stringFilter.filter(s => validateString(s));
+                if (options.stringFilter.length === 0) {
+                    options.stringFilter = validStrings;
                 }
             }
-        } catch (e) {
-            console.warn('Erreur lors du chargement des options:', e);
+            return options;
         }
+        
         return null;
     }
     
@@ -505,39 +717,43 @@ document.addEventListener('DOMContentLoaded', function() {
         saveGameOptions();
     });
 
-    // Gestion des modes de jeu
+    // Gestion des modes de jeu (optimisée)
     modeButtons.forEach(button => {
         button.addEventListener('click', function() {
-            // Retirer la classe active de tous les boutons
-            modeButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Ajouter la classe active au bouton cliqué
-            this.classList.add('active');
-            
-            // Changer le mode
-            currentMode = this.dataset.mode;
-            
-            // Mettre à jour l'interface
-            updateGameMode();
-            updateOptionsDisplay();
-            
-            // Sauvegarder les options
-            saveGameOptions();
+            safeExecute(() => {
+                // Retirer la classe active de tous les boutons
+                modeButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Ajouter la classe active au bouton cliqué
+                this.classList.add('active');
+                
+                // Changer le mode
+                currentMode = this.dataset.mode;
+                
+                // Mettre à jour l'interface
+                updateGameMode();
+                updateOptionsDisplay();
+                
+                // Sauvegarder les options
+                saveGameOptions();
+            });
         });
     });
 
-    // Gestion du filtre de type de notes
+    // Gestion du filtre de type de notes (optimisée avec debounce)
     const noteTypeRadios = document.querySelectorAll('input[name="noteType"]');
     noteTypeRadios.forEach(radio => {
-        const updateFilter = function() {
-            noteTypeFilter = radio.value;
-            updateOptionsDisplay();
-            saveGameOptions();
-            // Si une question est en cours, en générer une nouvelle avec le nouveau filtre
-            if (currentMode === 'find-note' && waitingForAnswer) {
-                generateQuestion();
-            }
-        };
+        const updateFilter = debounce(function() {
+            safeExecute(() => {
+                noteTypeFilter = radio.value;
+                updateOptionsDisplay();
+                saveGameOptions();
+                // Si une question est en cours, en générer une nouvelle avec le nouveau filtre
+                if (currentMode === 'find-note' && waitingForAnswer) {
+                    generateQuestion();
+                }
+            });
+        }, 150);
         
         radio.addEventListener('change', updateFilter);
         radio.addEventListener('click', updateFilter);
@@ -813,53 +1029,67 @@ document.addEventListener('DOMContentLoaded', function() {
         waitingForAnswer = true;
     }
 
-    // Bouton nouvelle question
+    // Bouton nouvelle question (optimisé)
     newQuestionButton.addEventListener('click', function() {
-        generateQuestion();
+        safeExecute(generateQuestion);
     });
 
-    // Gestion des clics sur les cases
-    fretboard.addEventListener('click', function(e) {
+    // Gestion des clics sur les cases (optimisée avec délégation et throttle)
+    const handleFretboardClick = throttle(function(e) {
         if (currentMode !== 'find-note' || !waitingForAnswer) return;
         
         const clickedFret = e.target.closest('.fret');
         if (!clickedFret) return;
         
-        waitingForAnswer = false;
-        
-        // Vérifier la réponse
-        const clickedString = clickedFret.closest('.string').dataset.string;
-        const clickedFretNumber = clickedFret.dataset.fret;
-        
-        if (clickedString === currentQuestion.string && clickedFretNumber === currentQuestion.fret) {
-            // Bonne réponse
-            clickedFret.classList.add('correct-answer');
-            score += 10;
-            streak++;
-            updateScore();
+        safeExecute(() => {
+            waitingForAnswer = false;
             
-            // Jouer le son de notification
-            playSuccessSound();
+            // Vérifier la réponse
+            const clickedString = clickedFret.closest('.string')?.dataset.string;
+            const clickedFretNumber = clickedFret.dataset.fret;
             
-            // Nouvelle question après un délai
-            setTimeout(() => {
-                generateQuestion();
-            }, 1000);
-        } else {
-            // Mauvaise réponse
-            clickedFret.classList.add('wrong-answer');
-            currentQuestion.element.classList.add('correct-answer');
-            streak = 0;
-            updateScore();
+            if (!validateString(clickedString)) {
+                showErrorMessage('Corde invalide détectée');
+                return;
+            }
             
-            // Afficher la bonne réponse pendant 2 secondes
-            setTimeout(() => {
-                clickedFret.classList.remove('wrong-answer');
-                currentQuestion.element.classList.remove('correct-answer');
-                waitingForAnswer = true;
-            }, 2000);
-        }
-    });
+            if (clickedString === currentQuestion.string && clickedFretNumber === currentQuestion.fret) {
+                // Bonne réponse
+                clickedFret.classList.add('correct-answer');
+                score += 10;
+                streak++;
+                
+                // Animation optimisée pour le score
+                animateValue(scoreElement, score);
+                animateValue(streakElement, streak);
+                
+                // Jouer le son de notification
+                playSuccessSound();
+                
+                // Nouvelle question après un délai
+                setTimeout(() => {
+                    safeExecute(generateQuestion);
+                }, 1000);
+            } else {
+                // Mauvaise réponse
+                clickedFret.classList.add('wrong-answer');
+                currentQuestion.element.classList.add('correct-answer');
+                streak = 0;
+                
+                // Animation optimisée pour le score
+                animateValue(streakElement, streak);
+                
+                // Afficher la bonne réponse pendant 2 secondes
+                setTimeout(() => {
+                    clickedFret.classList.remove('wrong-answer');
+                    currentQuestion.element.classList.remove('correct-answer');
+                    waitingForAnswer = true;
+                }, 2000);
+            }
+        });
+    }, 100);
+    
+    fretboard.addEventListener('click', handleFretboardClick);
 
     // Mettre à jour le score
     function updateScore() {
@@ -1123,4 +1353,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 1500);
         }
     }
+    
+    // Fin de l'initialisation - monitoring
+    PerformanceMonitor.end('AppInitialization');
+    console.log('✅ Application initialisée avec succès');
 });
