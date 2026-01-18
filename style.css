@@ -18,6 +18,10 @@ body {
     min-height: 100vh;
 }
 
+.text-center {
+    text-align: center;
+}
+
 /* Sidebar */
 .sidebar {
     width: 280px;
