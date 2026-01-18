@@ -25,7 +25,7 @@
             <div class="sidebar-section">
                 <h3 data-i18n="gameMode">Mode de jeu</h3>
                 <div class="mode-buttons">
-                    <button class="btn-mode" data-mode="practice" aria-label="Mode entraînement libre" data-i18n="mode.practice">Entraînement libre</button>
+                    <!-- <button class="btn-mode" data-mode="practice" aria-label="Mode entraînement libre" data-i18n="mode.practice">Entraînement libre</button> -->
                     <button class="btn-mode" data-mode="live-guitar" aria-label="Mode guitare live avec détection audio">🎸 <span data-i18n="mode.liveGuitar">Guitare Live</span></button>
                     <button class="btn-mode active" data-mode="find-note" aria-label="Mode trouver la note" data-i18n="mode.findNote">Trouver la note</button>
                 </div>
@@ -54,31 +54,37 @@
             <div class="sidebar-section">
                 <h3 data-i18n="strings">Cordes</h3>
                 <button id="toggleAllStrings" class="btn-toggle-all" aria-label="Cocher ou décocher toutes les cordes" data-i18n="strings.uncheckAll">Tout décocher</button>
-                <div class="string-filter">
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="e" checked>
-                        <span>Mi aigu (e)</span>
-                    </label>
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="B" checked>
-                        <span>Si (B)</span>
-                    </label>
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="G" checked>
-                        <span>Sol (G)</span>
-                    </label>
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="D" checked>
-                        <span>Ré (D)</span>
-                    </label>
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="A" checked>
-                        <span>La (A)</span>
-                    </label>
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="E" checked>
-                        <span>Mi grave (E)</span>
-                    </label>
+                <div class="custom-select-wrapper">
+                    <div class="custom-select-trigger" id="stringSelectTrigger">
+                        <span class="custom-select-value" data-i18n="strings.allSelected">6 cordes sélectionnées</span>
+                        <span class="custom-select-arrow">▼</span>
+                    </div>
+                    <div class="custom-select-dropdown" id="stringSelectDropdown">
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="e" checked data-string-checkbox>
+                            <span>Mi aigu (e)</span>
+                        </label>
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="B" checked data-string-checkbox>
+                            <span>Si (B)</span>
+                        </label>
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="G" checked data-string-checkbox>
+                            <span>Sol (G)</span>
+                        </label>
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="D" checked data-string-checkbox>
+                            <span>Ré (D)</span>
+                        </label>
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="A" checked data-string-checkbox>
+                            <span>La (A)</span>
+                        </label>
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="E" checked data-string-checkbox>
+                            <span>Mi grave (E)</span>
+                        </label>
+                    </div>
                 </div>
             </div>
             
@@ -103,35 +109,45 @@
                 <!-- Bouton retour paramètres (visible uniquement sur mobile) -->
                 <button id="backToSettings" class="btn-back mobile-only" data-i18n="backToSettings">⚙️ Paramètres</button>
 
+                <div class="game-options" id="gameOptions">
+                    <span class="option-item"><strong data-i18n="options.mode">Mode:</strong> <span id="optionMode">Trouver la note</span></span>
+                    <span class="option-separator">•</span>
+                    <span class="option-item"><strong data-i18n="options.notes">Notes:</strong> <span id="optionNoteType">Toutes</span></span>
+                    <span class="option-separator">•</span>
+                    <span class="option-item"><strong data-i18n="options.strings">Cordes:</strong> <span id="optionStrings">Toutes</span></span>
+                    <span class="option-separator">•</span>
+                    <span class="option-item"><strong data-i18n="options.notation">Notation:</strong> <span id="optionNotation">Française</span></span>
+                </div>
                 <!-- Zone de jeu -->
                 <div class="game-area" id="gameArea">
                     <div class="game-info">
-                        <div class="question" id="question" data-i18n="question.start">Cliquez sur "Nouvelle question" pour commencer</div>
                         <div id="liveGuitarStatus" class="live-guitar-status hidden">
                             <button id="startStopLiveButton" class="btn-live-control">
                                 <span class="btn-icon">▶️</span> <span data-i18n="liveGuitar.start">Démarrer</span>
                             </button>
+                            <div class="live-guitar-options">
+                                <label class="sound-toggle-label">
+                                    <input type="checkbox" id="soundToggle" checked>
+                                    <span data-i18n="liveGuitar.sound">Son de notification</span>
+                                </label>
+                            </div>
                             <div class="mic-indicator">
                                 <span class="mic-icon">🎤</span>
                                 <span class="mic-text" data-i18n="mic.inactive">Micro désactivé</span>
                             </div>
                             <div class="detected-note" id="detectedNote" data-i18n="detected.waiting">En attente...</div>
                         </div>
-                        <div class="game-options" id="gameOptions">
-                            <span class="option-item"><strong data-i18n="options.mode">Mode:</strong> <span id="optionMode">Trouver la note</span></span>
-                            <span class="option-separator">•</span>
-                            <span class="option-item"><strong data-i18n="options.notes">Notes:</strong> <span id="optionNoteType">Toutes</span></span>
-                            <span class="option-separator">•</span>
-                            <span class="option-item"><strong data-i18n="options.strings">Cordes:</strong> <span id="optionStrings">Toutes</span></span>
-                            <span class="option-separator">•</span>
-                            <span class="option-item"><strong data-i18n="options.notation">Notation:</strong> <span id="optionNotation">Française</span></span>
-                        </div>
                         <div class="game-stats">
                             <span class="stat"><span data-i18n="stats.score">Score</span> : <strong id="score">0</strong></span>
                             <span class="stat"><span data-i18n="stats.streak">Streak</span> : <strong id="streak">0</strong> 🔥</span>
                         </div>
                     </div>
+                </div>
+
+                <!-- Question et bouton juste au-dessus du fretboard -->
+                <div class="game-question-area">
                     <button id="newQuestion" class="btn-primary" data-i18n="newQuestion">Nouvelle question</button>
+                    <div class="question" id="question" data-i18n="question.start">Cliquez sur "Nouvelle question" pour commencer</div>
                 </div>
         
         <div class="fretboard-container">
