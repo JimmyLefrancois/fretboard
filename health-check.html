@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Check - Fretboard App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+        
+        .check-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .check-section h2 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .check-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .check-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .status {
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+        
+        .status.success {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .status.warning {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .status.error {
+            background: #f44336;
+            color: white;
+        }
+        
+        .status.info {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .overall-status {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+        
+        .overall-status h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .score {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #9FC131 0%, #8AB028 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏥 Health Check</h1>
+        
+        <div class="check-section">
+            <h2>📁 Fichiers Principaux</h2>
+            <div id="fileChecks"></div>
+        </div>
+        
+        <div class="check-section">
+            <h2>🛠️ Utilitaires</h2>
+            <div id="utilityChecks"></div>
+        </div>
+        
+        <div class="check-section">
+            <h2>⚡ Performance</h2>
+            <div id="performanceChecks"></div>
+        </div>
+        
+        <div class="check-section">
+            <h2>🔒 Sécurité</h2>
+            <div id="securityChecks"></div>
+        </div>
+        
+        <div class="overall-status">
+            <h2>Status Global</h2>
+            <div class="score" id="overallScore">--</div>
+            <div id="overallMessage"></div>
+            <button onclick="runHealthCheck()">🔄 Re-vérifier</button>
+        </div>
+    </div>
+    
+    <script>
+        let checks = {
+            files: [],
+            utilities: [],
+            performance: [],
+            security: []
+        };
+        
+        function addCheck(category, name, status, message = '') {
+            checks[category].push({ name, status, message });
+        }
+        
+        function runHealthCheck() {
+            // Réinitialiser
+            checks = {
+                files: [],
+                utilities: [],
+                performance: [],
+                security: []
+            };
+            
+            // 1. Vérifier les fichiers
+            checkFiles();
+            
+            // 2. Vérifier les utilitaires
+            checkUtilities();
+            
+            // 3. Vérifier les performances
+            checkPerformance();
+            
+            // 4. Vérifier la sécurité
+            checkSecurity();
+            
+            // Afficher les résultats
+            displayResults();
+            calculateOverallScore();
+        }
+        
+        function checkFiles() {
+            // Vérifier que les fonctions principales existent dans le scope global
+            const hasErrorHandlers = typeof window.onerror !== 'undefined';
+            addCheck('files', 'Gestionnaire d\'erreurs global', 
+                hasErrorHandlers ? 'success' : 'error',
+                hasErrorHandlers ? 'Installé' : 'Manquant');
+            
+            const hasShowErrorMessage = typeof showErrorMessage === 'function';
+            addCheck('files', 'showErrorMessage()', 
+                hasShowErrorMessage ? 'success' : 'warning',
+                hasShowErrorMessage ? 'Disponible' : 'Non trouvé');
+            
+            const hasSafeExecute = typeof safeExecute === 'function';
+            addCheck('files', 'safeExecute()', 
+                hasSafeExecute ? 'success' : 'error',
+                hasSafeExecute ? 'Disponible' : 'Manquant');
+        }
+        
+        function checkUtilities() {
+            // DOMCache
+            const hasDOMCache = typeof DOMCache === 'object';
+            addCheck('utilities', 'DOMCache', 
+                hasDOMCache ? 'success' : 'error',
+                hasDOMCache ? 'Opérationnel' : 'Manquant');
+            
+            // Debounce
+            const hasDebounce = typeof debounce === 'function';
+            addCheck('utilities', 'debounce()', 
+                hasDebounce ? 'success' : 'error',
+                hasDebounce ? 'Disponible' : 'Manquant');
+            
+            // Throttle
+            const hasThrottle = typeof throttle === 'function';
+            addCheck('utilities', 'throttle()', 
+                hasThrottle ? 'success' : 'error',
+                hasThrottle ? 'Disponible' : 'Manquant');
+            
+            // Validation
+            const hasValidation = typeof validateNote === 'function' && 
+                                  typeof validateString === 'function';
+            addCheck('utilities', 'Fonctions de validation', 
+                hasValidation ? 'success' : 'error',
+                hasValidation ? 'Disponibles' : 'Manquantes');
+            
+            // StorageManager
+            const hasStorageManager = typeof StorageManager === 'object';
+            addCheck('utilities', 'StorageManager', 
+                hasStorageManager ? 'success' : 'error',
+                hasStorageManager ? 'Opérationnel' : 'Manquant');
+            
+            // PerformanceMonitor
+            const hasPerfMonitor = typeof PerformanceMonitor === 'object';
+            addCheck('utilities', 'PerformanceMonitor', 
+                hasPerfMonitor ? 'success' : 'error',
+                hasPerfMonitor ? 'Opérationnel' : 'Manquant');
+            
+            // AnimateValue
+            const hasAnimateValue = typeof animateValue === 'function';
+            addCheck('utilities', 'animateValue()', 
+                hasAnimateValue ? 'success' : 'warning',
+                hasAnimateValue ? 'Disponible' : 'Non trouvé');
+        }
+        
+        function checkPerformance() {
+            // Test DOMCache
+            if (typeof DOMCache !== 'undefined') {
+                const start = performance.now();
+                for (let i = 0; i < 1000; i++) {
+                    DOMCache.get('body');
+                }
+                const duration = performance.now() - start;
+                
+                addCheck('performance', 'Cache DOM (1000 accès)', 
+                    duration < 10 ? 'success' : duration < 50 ? 'warning' : 'error',
+                    `${duration.toFixed(2)}ms`);
+            }
+            
+            // Test requestAnimationFrame
+            const hasRAF = typeof requestAnimationFrame === 'function';
+            addCheck('performance', 'requestAnimationFrame', 
+                hasRAF ? 'success' : 'error',
+                hasRAF ? 'Supporté' : 'Non supporté');
+            
+            // Test localStorage
+            const hasLocalStorage = typeof localStorage !== 'undefined';
+            addCheck('performance', 'localStorage', 
+                hasLocalStorage ? 'success' : 'warning',
+                hasLocalStorage ? 'Disponible' : 'Non disponible');
+        }
+        
+        function checkSecurity() {
+            // Vérifier la validation
+            if (typeof validateNote === 'function') {
+                const validTests = [
+                    validateNote('C') === true,
+                    validateNote('C#') === true,
+                    validateNote('Z') === false,
+                    validateNote('Invalid') === false
+                ];
+                
+                const allPassed = validTests.every(t => t);
+                addCheck('security', 'Validation des notes', 
+                    allPassed ? 'success' : 'error',
+                    allPassed ? 'Fonctionne correctement' : 'Problème détecté');
+            }
+            
+            if (typeof validateString === 'function') {
+                const validTests = [
+                    validateString('E') === true,
+                    validateString('A') === true,
+                    validateString('X') === false,
+                    validateString('Invalid') === false
+                ];
+                
+                const allPassed = validTests.every(t => t);
+                addCheck('security', 'Validation des cordes', 
+                    allPassed ? 'success' : 'error',
+                    allPassed ? 'Fonctionne correctement' : 'Problème détecté');
+            }
+            
+            // Test StorageManager
+            if (typeof StorageManager !== 'undefined') {
+                const testKey = '_health_check_test';
+                const testValue = { test: true, timestamp: Date.now() };
+                
+                const setSuccess = StorageManager.set(testKey, testValue);
+                const getValue = StorageManager.get(testKey);
+                const removeSuccess = StorageManager.remove(testKey);
+                
+                const allWork = setSuccess && getValue && removeSuccess;
+                addCheck('security', 'StorageManager', 
+                    allWork ? 'success' : 'warning',
+                    allWork ? 'Fonctionne correctement' : 'Problème détecté');
+            }
+        }
+        
+        function displayResults() {
+            displayCategory('fileChecks', checks.files);
+            displayCategory('utilityChecks', checks.utilities);
+            displayCategory('performanceChecks', checks.performance);
+            displayCategory('securityChecks', checks.security);
+        }
+        
+        function displayCategory(elementId, items) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = items.map(item => `
+                <div class="check-item">
+                    <span>${item.name}</span>
+                    <span class="status ${item.status}">
+                        ${item.status === 'success' ? '✅' : item.status === 'warning' ? '⚠️' : '❌'}
+                        ${item.message}
+                    </span>
+                </div>
+            `).join('');
+        }
+        
+        function calculateOverallScore() {
+            const allChecks = [
+                ...checks.files,
+                ...checks.utilities,
+                ...checks.performance,
+                ...checks.security
+            ];
+            
+            const total = allChecks.length;
+            const success = allChecks.filter(c => c.status === 'success').length;
+            const warnings = allChecks.filter(c => c.status === 'warning').length;
+            
+            const score = Math.round((success / total) * 100);
+            
+            const scoreElement = document.getElementById('overallScore');
+            const messageElement = document.getElementById('overallMessage');
+            
+            scoreElement.textContent = `${score}%`;
+            
+            if (score >= 90) {
+                scoreElement.style.color = '#4caf50';
+                messageElement.innerHTML = '<strong>✅ Excellent !</strong><br>Toutes les optimisations sont en place.';
+            } else if (score >= 70) {
+                scoreElement.style.color = '#ff9800';
+                messageElement.innerHTML = `<strong>⚠️ Bon</strong><br>${warnings} avertissement(s). Quelques améliorations possibles.`;
+            } else {
+                scoreElement.style.color = '#f44336';
+                messageElement.innerHTML = '<strong>❌ Attention</strong><br>Plusieurs problèmes détectés. Vérifiez la console.';
+            }
+        }
+        
+        // Exécuter au chargement
+        window.addEventListener('DOMContentLoaded', runHealthCheck);
+    </script>
+</body>
+</html>
