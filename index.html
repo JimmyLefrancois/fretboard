@@ -12,6 +12,7 @@
         
         <div class="controls">
             <button id="toggleNotes" class="btn-toggle">Afficher les notes</button>
+            <button id="toggleNotation" class="btn-toggle">Notation internationale</button>
         </div>
         
         <div class="fretboard-container">
@@ -20,103 +21,103 @@
                     <!-- Corde Mi aigu (e) -->
                     <tr class="string" data-string="e">
                         <td class="string-label">E (mi)</td>
-                        <td class="fret" data-fret="1" data-note="F"><span class="note">F</span></td>
-                        <td class="fret" data-fret="2" data-note="F#"><span class="note">F#</span></td>
-                        <td class="fret" data-fret="3" data-note="G"><span class="note">G</span></td>
-                        <td class="fret" data-fret="4" data-note="G#"><span class="note">G#</span></td>
-                        <td class="fret" data-fret="5" data-note="A"><span class="note">A</span></td>
-                        <td class="fret" data-fret="6" data-note="A#"><span class="note">A#</span></td>
-                        <td class="fret" data-fret="7" data-note="B"><span class="note">B</span></td>
-                        <td class="fret" data-fret="8" data-note="C"><span class="note">C</span></td>
-                        <td class="fret" data-fret="9" data-note="C#"><span class="note">C#</span></td>
-                        <td class="fret" data-fret="10" data-note="D"><span class="note">D</span></td>
-                        <td class="fret" data-fret="11" data-note="D#"><span class="note">D#</span></td>
-                        <td class="fret"  data-fret="12" data-note="E"><span class="note">E</span></td>
+                        <td class="fret" data-fret="1" data-note-int="F" data-note-fr="Fa"><span class="note">Fa</span></td>
+                        <td class="fret" data-fret="2" data-note-int="F#" data-note-fr="Fa#"><span class="note">Fa#</span></td>
+                        <td class="fret" data-fret="3" data-note-int="G" data-note-fr="Sol"><span class="note">Sol</span></td>
+                        <td class="fret" data-fret="4" data-note-int="G#" data-note-fr="Sol#"><span class="note">Sol#</span></td>
+                        <td class="fret" data-fret="5" data-note-int="A" data-note-fr="La"><span class="note">La</span></td>
+                        <td class="fret" data-fret="6" data-note-int="A#" data-note-fr="La#"><span class="note">La#</span></td>
+                        <td class="fret" data-fret="7" data-note-int="B" data-note-fr="Si"><span class="note">Si</span></td>
+                        <td class="fret" data-fret="8" data-note-int="C" data-note-fr="Do"><span class="note">Do</span></td>
+                        <td class="fret" data-fret="9" data-note-int="C#" data-note-fr="Do#"><span class="note">Do#</span></td>
+                        <td class="fret" data-fret="10" data-note-int="D" data-note-fr="Ré"><span class="note">Ré</span></td>
+                        <td class="fret" data-fret="11" data-note-int="D#" data-note-fr="Ré#"><span class="note">Ré#</span></td>
+                        <td class="fret"  data-fret="12" data-note-int="E" data-note-fr="Mi"><span class="note">Mi</span></td>
                     </tr>
                     
                     <!-- Corde Si (B) -->
                     <tr class="string" data-string="B">
                         <td class="string-label">B (si)</td>
-                        <td class="fret" data-fret="1" data-note="C"><span class="note">C</span></td>
-                        <td class="fret" data-fret="2" data-note="C#"><span class="note">C#</span></td>
-                        <td class="fret" data-fret="3" data-note="D"><span class="note">D</span></td>
-                        <td class="fret" data-fret="4" data-note="D#"><span class="note">D#</span></td>
-                        <td class="fret" data-fret="5" data-note="E"><span class="note">E</span></td>
-                        <td class="fret" data-fret="6" data-note="F"><span class="note">F</span></td>
-                        <td class="fret" data-fret="7" data-note="F#"><span class="note">F#</span></td>
-                        <td class="fret" data-fret="8" data-note="G"><span class="note">G</span></td>
-                        <td class="fret" data-fret="9" data-note="G#"><span class="note">G#</span></td>
-                        <td class="fret" data-fret="10" data-note="A"><span class="note">A</span></td>
-                        <td class="fret" data-fret="11" data-note="A#"><span class="note">A#</span></td>
-                        <td class="fret marker-12" data-fret="12" data-note="B"><span class="note">B</span></td>
+                        <td class="fret" data-fret="1" data-note-int="C" data-note-fr="Do"><span class="note">Do</span></td>
+                        <td class="fret" data-fret="2" data-note-int="C#" data-note-fr="Do#"><span class="note">Do#</span></td>
+                        <td class="fret" data-fret="3" data-note-int="D" data-note-fr="Ré"><span class="note">Ré</span></td>
+                        <td class="fret" data-fret="4" data-note-int="D#" data-note-fr="Ré#"><span class="note">Ré#</span></td>
+                        <td class="fret" data-fret="5" data-note-int="E" data-note-fr="Mi"><span class="note">Mi</span></td>
+                        <td class="fret" data-fret="6" data-note-int="F" data-note-fr="Fa"><span class="note">Fa</span></td>
+                        <td class="fret" data-fret="7" data-note-int="F#" data-note-fr="Fa#"><span class="note">Fa#</span></td>
+                        <td class="fret" data-fret="8" data-note-int="G" data-note-fr="Sol"><span class="note">Sol</span></td>
+                        <td class="fret" data-fret="9" data-note-int="G#" data-note-fr="Sol#"><span class="note">Sol#</span></td>
+                        <td class="fret" data-fret="10" data-note-int="A" data-note-fr="La"><span class="note">La</span></td>
+                        <td class="fret" data-fret="11" data-note-int="A#" data-note-fr="La#"><span class="note">La#</span></td>
+                        <td class="fret marker-12" data-fret="12" data-note-int="B" data-note-fr="Si"><span class="note">Si</span></td>
                     </tr>
                     
                     <!-- Corde Sol (G) -->
                     <tr class="string" data-string="G">
                         <td class="string-label">G (sol)</td>
-                        <td class="fret" data-fret="1" data-note="G#"><span class="note">G#</span></td>
-                        <td class="fret" data-fret="2" data-note="A"><span class="note">A</span></td>
-                        <td class="fret" data-fret="3" data-note="A#"><span class="note">A#</span></td>
-                        <td class="fret" data-fret="4" data-note="B"><span class="note">B</span></td>
-                        <td class="fret" data-fret="5" data-note="C"><span class="note">C</span></td>
-                        <td class="fret" data-fret="6" data-note="C#"><span class="note">C#</span></td>
-                        <td class="fret" data-fret="7" data-note="D"><span class="note">D</span></td>
-                        <td class="fret" data-fret="8" data-note="D#"><span class="note">D#</span></td>
-                        <td class="fret" data-fret="9" data-note="E"><span class="note">E</span></td>
-                        <td class="fret" data-fret="10" data-note="F"><span class="note">F</span></td>
-                        <td class="fret" data-fret="11" data-note="F#"><span class="note">F#</span></td>
-                        <td class="fret" data-fret="12" data-note="G"><span class="note">G</span></td>
+                        <td class="fret" data-fret="1" data-note-int="G#" data-note-fr="Sol#"><span class="note">Sol#</span></td>
+                        <td class="fret" data-fret="2" data-note-int="A" data-note-fr="La"><span class="note">La</span></td>
+                        <td class="fret" data-fret="3" data-note-int="A#" data-note-fr="La#"><span class="note">La#</span></td>
+                        <td class="fret" data-fret="4" data-note-int="B" data-note-fr="Si"><span class="note">Si</span></td>
+                        <td class="fret" data-fret="5" data-note-int="C" data-note-fr="Do"><span class="note">Do</span></td>
+                        <td class="fret" data-fret="6" data-note-int="C#" data-note-fr="Do#"><span class="note">Do#</span></td>
+                        <td class="fret" data-fret="7" data-note-int="D" data-note-fr="Ré"><span class="note">Ré</span></td>
+                        <td class="fret" data-fret="8" data-note-int="D#" data-note-fr="Ré#"><span class="note">Ré#</span></td>
+                        <td class="fret" data-fret="9" data-note-int="E" data-note-fr="Mi"><span class="note">Mi</span></td>
+                        <td class="fret" data-fret="10" data-note-int="F" data-note-fr="Fa"><span class="note">Fa</span></td>
+                        <td class="fret" data-fret="11" data-note-int="F#" data-note-fr="Fa#"><span class="note">Fa#</span></td>
+                        <td class="fret" data-fret="12" data-note-int="G" data-note-fr="Sol"><span class="note">Sol</span></td>
                     </tr>
                     
                     <!-- Corde Ré (D) -->
                     <tr class="string" data-string="D">
                         <td class="string-label">D (ré)</td>
-                        <td class="fret" data-fret="1" data-note="D#"><span class="note">D#</span></td>
-                        <td class="fret" data-fret="2" data-note="E"><span class="note">E</span></td>
-                        <td class="fret marker-3" data-fret="3" data-note="F"><span class="note">F</span></td>
-                        <td class="fret" data-fret="4" data-note="F#"><span class="note">F#</span></td>
-                        <td class="fret marker-5" data-fret="5" data-note="G"><span class="note">G</span></td>
-                        <td class="fret" data-fret="6" data-note="G#"><span class="note">G#</span></td>
-                        <td class="fret marker-7" data-fret="7" data-note="A"><span class="note">A</span></td>
-                        <td class="fret" data-fret="8" data-note="A#"><span class="note">A#</span></td>
-                        <td class="fret marker-9" data-fret="9" data-note="B"><span class="note">B</span></td>
-                        <td class="fret" data-fret="10" data-note="C"><span class="note">C</span></td>
-                        <td class="fret" data-fret="11" data-note="C#"><span class="note">C#</span></td>
-                        <td class="fret" data-fret="12" data-note="D"><span class="note">D</span></td>
+                        <td class="fret" data-fret="1" data-note-int="D#" data-note-fr="Ré#"><span class="note">Ré#</span></td>
+                        <td class="fret" data-fret="2" data-note-int="E" data-note-fr="Mi"><span class="note">Mi</span></td>
+                        <td class="fret marker-3" data-fret="3" data-note-int="F" data-note-fr="Fa"><span class="note">Fa</span></td>
+                        <td class="fret" data-fret="4" data-note-int="F#" data-note-fr="Fa#"><span class="note">Fa#</span></td>
+                        <td class="fret marker-5" data-fret="5" data-note-int="G" data-note-fr="Sol"><span class="note">Sol</span></td>
+                        <td class="fret" data-fret="6" data-note-int="G#" data-note-fr="Sol#"><span class="note">Sol#</span></td>
+                        <td class="fret marker-7" data-fret="7" data-note-int="A" data-note-fr="La"><span class="note">La</span></td>
+                        <td class="fret" data-fret="8" data-note-int="A#" data-note-fr="La#"><span class="note">La#</span></td>
+                        <td class="fret marker-9" data-fret="9" data-note-int="B" data-note-fr="Si"><span class="note">Si</span></td>
+                        <td class="fret" data-fret="10" data-note-int="C" data-note-fr="Do"><span class="note">Do</span></td>
+                        <td class="fret" data-fret="11" data-note-int="C#" data-note-fr="Do#"><span class="note">Do#</span></td>
+                        <td class="fret" data-fret="12" data-note-int="D" data-note-fr="Ré"><span class="note">Ré</span></td>
                     </tr>
                     
                     <!-- Corde La (A) -->
                     <tr class="string" data-string="A">
                         <td class="string-label">A (la)</td>
-                        <td class="fret" data-fret="1" data-note="A#"><span class="note">A#</span></td>
-                        <td class="fret" data-fret="2" data-note="B"><span class="note">B</span></td>
-                        <td class="fret" data-fret="3" data-note="C"><span class="note">C</span></td>
-                        <td class="fret" data-fret="4" data-note="C#"><span class="note">C#</span></td>
-                        <td class="fret" data-fret="5" data-note="D"><span class="note">D</span></td>
-                        <td class="fret" data-fret="6" data-note="D#"><span class="note">D#</span></td>
-                        <td class="fret" data-fret="7" data-note="E"><span class="note">E</span></td>
-                        <td class="fret" data-fret="8" data-note="F"><span class="note">F</span></td>
-                        <td class="fret" data-fret="9" data-note="F#"><span class="note">F#</span></td>
-                        <td class="fret" data-fret="10" data-note="G"><span class="note">G</span></td>
-                        <td class="fret" data-fret="11" data-note="G#"><span class="note">G#</span></td>
-                        <td class="fret marker-12" data-fret="12" data-note="A"><span class="note">A</span></td>
+                        <td class="fret" data-fret="1" data-note-int="A#" data-note-fr="La#"><span class="note">La#</span></td>
+                        <td class="fret" data-fret="2" data-note-int="B" data-note-fr="Si"><span class="note">Si</span></td>
+                        <td class="fret" data-fret="3" data-note-int="C" data-note-fr="Do"><span class="note">Do</span></td>
+                        <td class="fret" data-fret="4" data-note-int="C#" data-note-fr="Do#"><span class="note">Do#</span></td>
+                        <td class="fret" data-fret="5" data-note-int="D" data-note-fr="Ré"><span class="note">Ré</span></td>
+                        <td class="fret" data-fret="6" data-note-int="D#" data-note-fr="Ré#"><span class="note">Ré#</span></td>
+                        <td class="fret" data-fret="7" data-note-int="E" data-note-fr="Mi"><span class="note">Mi</span></td>
+                        <td class="fret" data-fret="8" data-note-int="F" data-note-fr="Fa"><span class="note">Fa</span></td>
+                        <td class="fret" data-fret="9" data-note-int="F#" data-note-fr="Fa#"><span class="note">Fa#</span></td>
+                        <td class="fret" data-fret="10" data-note-int="G" data-note-fr="Sol"><span class="note">Sol</span></td>
+                        <td class="fret" data-fret="11" data-note-int="G#" data-note-fr="Sol#"><span class="note">Sol#</span></td>
+                        <td class="fret marker-12" data-fret="12" data-note-int="A" data-note-fr="La"><span class="note">La</span></td>
                     </tr>
                     
                     <!-- Corde Mi grave (E) -->
                     <tr class="string" data-string="E">
                         <td class="string-label">E (mi)</td>
-                        <td class="fret" data-fret="1" data-note="F"><span class="note">F</span></td>
-                        <td class="fret" data-fret="2" data-note="F#"><span class="note">F#</span></td>
-                        <td class="fret" data-fret="3" data-note="G"><span class="note">G</span></td>
-                        <td class="fret" data-fret="4" data-note="G#"><span class="note">G#</span></td>
-                        <td class="fret" data-fret="5" data-note="A"><span class="note">A</span></td>
-                        <td class="fret" data-fret="6" data-note="A#"><span class="note">A#</span></td>
-                        <td class="fret" data-fret="7" data-note="B"><span class="note">B</span></td>
-                        <td class="fret" data-fret="8" data-note="C"><span class="note">C</span></td>
-                        <td class="fret" data-fret="9" data-note="C#"><span class="note">C#</span></td>
-                        <td class="fret" data-fret="10" data-note="D"><span class="note">D</span></td>
-                        <td class="fret" data-fret="11" data-note="D#"><span class="note">D#</span></td>
-                        <td class="fret" data-fret="12" data-note="E"><span class="note">E</span></td>
+                        <td class="fret" data-fret="1" data-note-int="F" data-note-fr="Fa"><span class="note">Fa</span></td>
+                        <td class="fret" data-fret="2" data-note-int="F#" data-note-fr="Fa#"><span class="note">Fa#</span></td>
+                        <td class="fret" data-fret="3" data-note-int="G" data-note-fr="Sol"><span class="note">Sol</span></td>
+                        <td class="fret" data-fret="4" data-note-int="G#" data-note-fr="Sol#"><span class="note">Sol#</span></td>
+                        <td class="fret" data-fret="5" data-note-int="A" data-note-fr="La"><span class="note">La</span></td>
+                        <td class="fret" data-fret="6" data-note-int="A#" data-note-fr="La#"><span class="note">La#</span></td>
+                        <td class="fret" data-fret="7" data-note-int="B" data-note-fr="Si"><span class="note">Si</span></td>
+                        <td class="fret" data-fret="8" data-note-int="C" data-note-fr="Do"><span class="note">Do</span></td>
+                        <td class="fret" data-fret="9" data-note-int="C#" data-note-fr="Do#"><span class="note">Do#</span></td>
+                        <td class="fret" data-fret="10" data-note-int="D" data-note-fr="Ré"><span class="note">Ré</span></td>
+                        <td class="fret" data-fret="11" data-note-int="D#" data-note-fr="Ré#"><span class="note">Ré#</span></td>
+                        <td class="fret" data-fret="12" data-note-int="E" data-note-fr="Mi"><span class="note">Mi</span></td>
                     </tr>
                 </tbody>
                 
