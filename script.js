@@ -724,6 +724,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Générer une nouvelle question
+    let lastQuestion = null; // Stocker la dernière question pour éviter les doublons
+    
     function generateQuestion() {
         // Nettoyer les classes de réponse précédentes
         document.querySelectorAll('.fret').forEach(fret => {
@@ -750,6 +752,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // Si on a une question précédente et qu'il y a plus d'une case disponible, l'exclure
+        if (lastQuestion && allFrets.length > 1) {
+            allFrets = allFrets.filter(fret => {
+                const fretString = fret.closest('.string').dataset.string;
+                const fretNumber = fret.dataset.fret;
+                return !(fretString === lastQuestion.string && fretNumber === lastQuestion.fret);
+            });
+        }
+        
         // Choisir une case aléatoire
         const randomFret = allFrets[Math.floor(Math.random() * allFrets.length)];
         
@@ -764,6 +775,12 @@ document.addEventListener('DOMContentLoaded', function() {
             string: targetString,
             fret: randomFret.dataset.fret,
             element: randomFret
+        };
+        
+        // Sauvegarder la question pour éviter qu'elle se répète
+        lastQuestion = {
+            string: targetString,
+            fret: randomFret.dataset.fret
         };
         
         const questionTemplate = translate('questionText');
