@@ -39,15 +39,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // Pré-charger le son de notification
     const successSound = new Audio('sounds/bell.mp3');
     successSound.volume = 0.7;
+    let audioAvailable = true;
+    
+    // Vérifier si l'audio est disponible
+    successSound.addEventListener('error', function() {
+        audioAvailable = false;
+        console.warn('Son de notification non disponible');
+    });
     
     // Fonction pour jouer un son de notification
     function playSuccessSound() {
-        successSound.currentTime = 0; // Réinitialiser au début
-        successSound.play().catch(err => console.log('Erreur lecture audio:', err));
+        if (!audioAvailable) return; // Fallback silencieux si audio indisponible
+        
+        successSound.currentTime = 0;
+        successSound.play().catch(err => {
+            audioAvailable = false;
+            console.warn('Impossible de jouer le son:', err);
+        });
     }
     
     // Fonctions de gestion du localStorage
     function saveGameOptions() {
+        if (isInitializing) return; // Ne pas sauvegarder pendant l'initialisation
+        
         try {
             const options = {
                 noteTypeFilter: noteTypeFilter,
@@ -98,6 +112,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let frenchNotation = savedOptions?.frenchNotation !== undefined ? savedOptions.frenchNotation : true;
     let currentMode = savedOptions?.currentMode || 'find-note';
     
+    // Flag pour éviter les sauvegardes pendant l'initialisation
+    let isInitializing = true;
+    
     // Appliquer les options sauvegardées aux formulaires
     if (savedOptions) {
         // Appliquer le filtre de type de notes
@@ -118,9 +135,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Appliquer la notation si elle est différente de française
         if (!frenchNotation) {
-            toggleNotationButton.click();
+            // Appliquer directement sans déclencher l'événement
+            frenchNotation = false;
+            const frets = document.querySelectorAll('.fret');
+            frets.forEach(fret => {
+                const noteSpan = fret.querySelector('.note');
+                if (noteSpan) {
+                    noteSpan.textContent = fret.dataset.noteInt;
+                }
+            });
+            toggleNotationButton.textContent = 'Notation française';
         }
     }
+    
+    // Fin de l'initialisation
+    isInitializing = false;
     
     console.log('Initialisation - Filtre type:', noteTypeFilter, 'Filtre cordes:', stringFilter);
     
@@ -333,9 +362,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Réinitialiser
         document.body.classList.remove('game-mode-practice', 'game-mode-find-note', 'game-mode-live-guitar');
         
-        // Arrêter le micro si actif
+        // Arrêter le micro si actif (async mais non bloqué)
         if (isListening) {
-            stopMicrophone();
+            stopMicrophone().catch(err => console.warn('Erreur arrêt micro:', err));
         }
         
         // Réinitialiser le bouton start/stop
