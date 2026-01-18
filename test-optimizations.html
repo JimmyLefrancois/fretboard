@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test des Optimisations</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+        button {
+            background: linear-gradient(135deg, #9FC131 0%, #8AB028 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 5px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .success {
+            color: #9FC131;
+        }
+        .error {
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test des Optimisations</h1>
+    
+    <div class="test-section">
+        <h2>1. Gestion d'Erreurs</h2>
+        <button onclick="testErrorHandling()">Tester Capture d'Erreur</button>
+        <button onclick="testPromiseRejection()">Tester Promise Rejetée</button>
+        <button onclick="testSafeExecute()">Tester SafeExecute</button>
+        <div id="errorResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Cache DOM</h2>
+        <button onclick="testDOMCache()">Tester Cache DOM</button>
+        <button onclick="testCachePerformance()">Comparer Performance</button>
+        <div id="cacheResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Debounce & Throttle</h2>
+        <button onclick="testDebounce()">Tester Debounce</button>
+        <button onclick="testThrottle()">Tester Throttle</button>
+        <div id="debounceResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Validation</h2>
+        <button onclick="testValidation()">Tester Validation</button>
+        <div id="validationResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Storage Manager</h2>
+        <button onclick="testStorageManager()">Tester StorageManager</button>
+        <div id="storageResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>6. Performance Monitor</h2>
+        <button onclick="testPerformanceMonitor()">Tester PerformanceMonitor</button>
+        <div id="perfResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>7. Animation Value</h2>
+        <button onclick="testAnimateValue()">Tester Animation</button>
+        <div id="animValue" class="result" style="font-size: 2em; text-align: center;">0</div>
+    </div>
+
+    <script>
+        // Copier les fonctions utilitaires du script principal
+        
+        // Gestion d'erreurs globale
+        window.addEventListener('error', (event) => {
+            document.getElementById('errorResult').innerHTML += 
+                `<span class="success">✅ Erreur capturée: ${event.error.message}</span><br>`;
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            document.getElementById('errorResult').innerHTML += 
+                `<span class="success">✅ Promise rejetée capturée: ${event.reason}</span><br>`;
+        });
+
+        function showErrorMessage(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-toast';
+            errorDiv.textContent = message;
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #f8d7da 0%, #f5c2c7 100%);
+                color: #842029;
+                padding: 16px 24px;
+                border-radius: 8px;
+                border-left: 4px solid #dc3545;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                font-weight: 500;
+            `;
+            document.body.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 3000);
+        }
+
+        function safeExecute(fn, context = null, ...args) {
+            try {
+                return fn.apply(context, args);
+            } catch (error) {
+                console.error('❌ Erreur dans safeExecute:', error);
+                showErrorMessage('Une erreur est survenue lors de l\'exécution.');
+                return null;
+            }
+        }
+
+        const DOMCache = {
+            elements: new Map(),
+            get(selector) {
+                if (!this.elements.has(selector)) {
+                    const element = document.querySelector(selector);
+                    if (!element) return null;
+                    this.elements.set(selector, element);
+                }
+                return this.elements.get(selector);
+            },
+            clear() {
+                this.elements.clear();
+            }
+        };
+
+        function debounce(func, wait = 250) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func(...args), wait);
+            };
+        }
+
+        function throttle(func, limit = 100) {
+            let inThrottle;
+            return function(...args) {
+                if (!inThrottle) {
+                    func.apply(this, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+
+        function validateNote(note) {
+            const validNotes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            return validNotes.includes(note);
+        }
+
+        function validateString(string) {
+            const validStrings = ['e', 'B', 'G', 'D', 'A', 'E'];
+            return validStrings.includes(string);
+        }
+
+        const StorageManager = {
+            set(key, value) {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            },
+            get(key, defaultValue = null) {
+                try {
+                    const item = localStorage.getItem(key);
+                    return item ? JSON.parse(item) : defaultValue;
+                } catch (error) {
+                    return defaultValue;
+                }
+            },
+            remove(key) {
+                try {
+                    localStorage.removeItem(key);
+                    return true;
+                } catch (error) {
+                    return false;
+                }
+            }
+        };
+
+        const PerformanceMonitor = {
+            marks: new Map(),
+            start(label) {
+                this.marks.set(label, performance.now());
+            },
+            end(label) {
+                if (this.marks.has(label)) {
+                    const duration = performance.now() - this.marks.get(label);
+                    this.marks.delete(label);
+                    return duration;
+                }
+            }
+        };
+
+        function animateValue(element, newValue, duration = 300) {
+            if (!element) return;
+            const currentValue = parseInt(element.textContent) || 0;
+            const startTime = performance.now();
+            
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const value = Math.floor(currentValue + (newValue - currentValue) * progress);
+                element.textContent = value;
+                if (progress < 1) requestAnimationFrame(animate);
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // Tests
+        function testErrorHandling() {
+            document.getElementById('errorResult').innerHTML = '';
+            setTimeout(() => {
+                throw new Error('Test d\'erreur volontaire');
+            }, 100);
+        }
+
+        function testPromiseRejection() {
+            document.getElementById('errorResult').innerHTML = '';
+            Promise.reject('Test de promise rejetée');
+        }
+
+        function testSafeExecute() {
+            const result = safeExecute(() => {
+                throw new Error('Erreur dans safeExecute');
+            });
+            document.getElementById('errorResult').innerHTML = 
+                `<span class="success">✅ safeExecute a retourné: ${result}</span>`;
+        }
+
+        function testDOMCache() {
+            const start = performance.now();
+            for (let i = 0; i < 1000; i++) {
+                DOMCache.get('h1');
+            }
+            const duration = performance.now() - start;
+            document.getElementById('cacheResult').innerHTML = 
+                `<span class="success">✅ 1000 accès via cache: ${duration.toFixed(2)}ms</span>`;
+        }
+
+        function testCachePerformance() {
+            // Sans cache
+            const start1 = performance.now();
+            for (let i = 0; i < 1000; i++) {
+                document.querySelector('h1');
+            }
+            const noCacheDuration = performance.now() - start1;
+
+            // Avec cache
+            DOMCache.clear();
+            const start2 = performance.now();
+            for (let i = 0; i < 1000; i++) {
+                DOMCache.get('h1');
+            }
+            const cacheDuration = performance.now() - start2;
+
+            const improvement = ((noCacheDuration - cacheDuration) / noCacheDuration * 100).toFixed(1);
+
+            document.getElementById('cacheResult').innerHTML = 
+                `<span class="success">Sans cache: ${noCacheDuration.toFixed(2)}ms</span><br>` +
+                `<span class="success">Avec cache: ${cacheDuration.toFixed(2)}ms</span><br>` +
+                `<span class="success">✅ Amélioration: ${improvement}%</span>`;
+        }
+
+        function testDebounce() {
+            let count = 0;
+            const debouncedFn = debounce(() => {
+                document.getElementById('debounceResult').innerHTML = 
+                    `<span class="success">✅ Debounce exécuté ${++count} fois (devrait être 1)</span>`;
+            }, 300);
+
+            // Appeler 10 fois rapidement
+            for (let i = 0; i < 10; i++) {
+                debouncedFn();
+            }
+        }
+
+        function testThrottle() {
+            let count = 0;
+            const throttledFn = throttle(() => {
+                document.getElementById('debounceResult').innerHTML = 
+                    `<span class="success">✅ Throttle exécuté ${++count} fois</span>`;
+            }, 100);
+
+            // Appeler 10 fois rapidement
+            for (let i = 0; i < 10; i++) {
+                throttledFn();
+            }
+        }
+
+        function testValidation() {
+            const tests = [
+                { fn: () => validateNote('C#'), expected: true, label: 'Note C#' },
+                { fn: () => validateNote('Z'), expected: false, label: 'Note Z' },
+                { fn: () => validateString('E'), expected: true, label: 'Corde E' },
+                { fn: () => validateString('X'), expected: false, label: 'Corde X' }
+            ];
+
+            let html = '';
+            tests.forEach(test => {
+                const result = test.fn();
+                const passed = result === test.expected;
+                html += `<span class="${passed ? 'success' : 'error'}">${passed ? '✅' : '❌'} ${test.label}: ${result}</span><br>`;
+            });
+
+            document.getElementById('validationResult').innerHTML = html;
+        }
+
+        function testStorageManager() {
+            const testData = { score: 100, streak: 5 };
+            
+            // Test set
+            const setSuccess = StorageManager.set('test_key', testData);
+            
+            // Test get
+            const retrieved = StorageManager.get('test_key');
+            
+            // Test remove
+            const removeSuccess = StorageManager.remove('test_key');
+            
+            document.getElementById('storageResult').innerHTML = 
+                `<span class="success">✅ Set: ${setSuccess}</span><br>` +
+                `<span class="success">✅ Get: ${JSON.stringify(retrieved)}</span><br>` +
+                `<span class="success">✅ Remove: ${removeSuccess}</span>`;
+        }
+
+        function testPerformanceMonitor() {
+            PerformanceMonitor.start('TestOperation');
+            
+            // Simuler une opération
+            let sum = 0;
+            for (let i = 0; i < 1000000; i++) {
+                sum += i;
+            }
+            
+            const duration = PerformanceMonitor.end('TestOperation');
+            
+            document.getElementById('perfResult').innerHTML = 
+                `<span class="success">✅ Opération terminée en ${duration.toFixed(2)}ms</span>`;
+        }
+
+        function testAnimateValue() {
+            const element = document.getElementById('animValue');
+            const randomValue = Math.floor(Math.random() * 1000);
+            animateValue(element, randomValue, 500);
+        }
+    </script>
+</body>
+</html>
