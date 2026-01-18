@@ -17,7 +17,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let score = 0;
     let streak = 0;
     let waitingForAnswer = false;
-    let noteTypeFilter = 'both'; // 'both', 'natural', 'sharp'
+    
+    // Initialiser les filtres en lisant l'état actuel des formulaires
+    let noteTypeFilter = document.querySelector('input[name="noteType"]:checked')?.value || 'both';
+    let stringFilter = Array.from(document.querySelectorAll('input[name="string"]:checked')).map(cb => cb.value);
+    if (stringFilter.length === 0) {
+        stringFilter = ['e', 'B', 'G', 'D', 'A', 'E']; // Toutes les cordes par défaut
+    }
+    
+    console.log('Initialisation - Filtre type:', noteTypeFilter, 'Filtre cordes:', stringFilter);
 
     // Données pour les notes
     const stringNames = {
@@ -88,9 +96,43 @@ document.addEventListener('DOMContentLoaded', function() {
     // Gestion du filtre de type de notes
     const noteTypeRadios = document.querySelectorAll('input[name="noteType"]');
     noteTypeRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            noteTypeFilter = this.value;
+        const updateFilter = function() {
+            noteTypeFilter = radio.value;
+            console.log('Filtre de type de notes changé:', noteTypeFilter);
             // Si une question est en cours, en générer une nouvelle avec le nouveau filtre
+            if (currentMode === 'find-note' && waitingForAnswer) {
+                generateQuestion();
+            }
+        };
+        
+        radio.addEventListener('change', updateFilter);
+        radio.addEventListener('click', updateFilter);
+        
+        // Aussi sur le label parent
+        const label = radio.closest('.filter-option');
+        if (label) {
+            label.addEventListener('click', function() {
+                radio.checked = true;
+                updateFilter();
+            });
+        }
+    });
+
+    // Gestion du filtre de cordes
+    document.querySelectorAll('input[name="string"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            // Mettre à jour le tableau des cordes sélectionnées
+            stringFilter = Array.from(document.querySelectorAll('input[name="string"]:checked'))
+                .map(cb => cb.value);
+            
+            // Si aucune corde n'est sélectionnée, empêcher la désélection de toutes
+            if (stringFilter.length === 0) {
+                this.checked = true;
+                stringFilter = [this.value];
+                return;
+            }
+            
+            // Générer une nouvelle question si on est en mode jeu
             if (waitingForAnswer) {
                 generateQuestion();
             }
@@ -139,12 +181,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // Récupérer toutes les cases
         let allFrets = Array.from(document.querySelectorAll('.fret'));
         
+        console.log('Génération question - Filtre type:', noteTypeFilter, 'Filtre cordes:', stringFilter);
+        console.log('Nombre de frets avant filtrage:', allFrets.length);
+        
         // Filtrer selon le type de notes sélectionné
         if (noteTypeFilter === 'natural') {
             allFrets = allFrets.filter(fret => fret.dataset.type === 'natural');
+            console.log('Après filtre natural:', allFrets.length);
         } else if (noteTypeFilter === 'sharp') {
             allFrets = allFrets.filter(fret => fret.dataset.type === 'sharp');
+            console.log('Après filtre sharp:', allFrets.length);
         }
+        
+        // Filtrer selon les cordes sélectionnées
+        allFrets = allFrets.filter(fret => stringFilter.includes(fret.dataset.string));
+        console.log('Après filtre cordes:', allFrets.length);
         
         // Vérifier qu'il y a des cases disponibles
         if (allFrets.length === 0) {
