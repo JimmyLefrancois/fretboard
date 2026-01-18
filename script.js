@@ -101,6 +101,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const key = element.getAttribute('data-i18n');
             element.textContent = translate(key);
         });
+        
+        // Mettre à jour les labels des cordes dans la sidebar
+        updateStringLabels();
+    }
+    
+    // Fonction pour mettre à jour les labels des cordes selon la langue
+    function updateStringLabels() {
+        const stringOptions = document.querySelectorAll('.string-option span');
+        const stringValues = ['e', 'B', 'G', 'D', 'A', 'E'];
+        
+        stringOptions.forEach((span, index) => {
+            const stringValue = stringValues[index];
+            if (stringValue && stringNames[stringValue]) {
+                const name = currentLanguage === 'fr' ? stringNames[stringValue].fr : stringNames[stringValue].int;
+                const notation = stringValue;
+                span.textContent = `${name} (${notation})`;
+            }
+        });
     }
     
     const toggleButton = document.getElementById('toggleNotes');
@@ -264,6 +282,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fin de l'initialisation
     isInitializing = false;
+    
+    // Initialiser les labels des cordes selon la langue
+    updateStringLabels();
     
     // Gestion du changement de langue
     const languageButtons = document.querySelectorAll('.btn-lang');
