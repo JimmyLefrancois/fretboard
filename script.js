@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
             strings: 'Cordes',
             'strings.checkAll': 'Tout cocher',
             'strings.uncheckAll': 'Tout décocher',
+            'strings.allSelected': '6 cordes sélectionnées',
+            'strings.selected': 'cordes',
             display: 'Affichage',
             'display.showNotes': 'Afficher les notes',
             'display.hideNotes': 'Cacher les notes',
@@ -55,10 +57,12 @@ document.addEventListener('DOMContentLoaded', function() {
             noteType: 'Note Type',
             'noteType.all': 'All',
             'noteType.natural': 'Natural',
-            'noteType.sharp': 'Accidentals',
+            'noteType.sharp': 'Altered',
             strings: 'Strings',
             'strings.checkAll': 'Check all',
             'strings.uncheckAll': 'Uncheck all',
+            'strings.allSelected': '6 strings selected',
+            'strings.selected': 'strings',
             display: 'Display',
             'display.showNotes': 'Show notes',
             'display.hideNotes': 'Hide notes',
@@ -235,10 +239,40 @@ document.addEventListener('DOMContentLoaded', function() {
         const noteTypeRadio = document.querySelector(`input[name="noteType"][value="${noteTypeFilter}"]`);
         if (noteTypeRadio) noteTypeRadio.checked = true;
         
-        // Appliquer le filtre de cordes
-        document.querySelectorAll('input[name="string"]').forEach(cb => {
-            cb.checked = stringFilter.includes(cb.value);
-        });
+        // Appliquer le filtre de cordes aux checkboxes
+        const stringCheckboxes = document.querySelectorAll('[data-string-checkbox]');
+        if (stringCheckboxes.length > 0) {
+            stringCheckboxes.forEach(cb => {
+                cb.checked = stringFilter.includes(cb.value);
+            });
+            // Mettre à jour le texte du trigger
+            const updateTrigger = document.querySelector('.custom-select-value');
+            if (updateTrigger) {
+                const checked = document.querySelectorAll('[data-string-checkbox]:checked');
+                if (checked.length === 6) {
+                    updateTrigger.setAttribute('data-i18n', 'strings.allSelected');
+                    updateTrigger.textContent = translate('strings.allSelected');
+                } else {
+                    updateTrigger.removeAttribute('data-i18n');
+                    
+                    // Créer la liste des noms de cordes selon la notation
+                    const stringNames = {
+                        'e': frenchNotation ? 'Mi aigu' : 'e',
+                        'B': frenchNotation ? 'Si' : 'B',
+                        'G': frenchNotation ? 'Sol' : 'G',
+                        'D': frenchNotation ? 'Ré' : 'D',
+                        'A': frenchNotation ? 'La' : 'A',
+                        'E': frenchNotation ? 'Mi grave' : 'E'
+                    };
+                    
+                    const selectedNames = Array.from(checked)
+                        .map(cb => stringNames[cb.value])
+                        .join(', ');
+                    
+                    updateTrigger.textContent = `${checked.length} ${translate('strings.selected')} : ${selectedNames}`;
+                }
+            }
+        }
         
         // Appliquer le mode
         const modeBtn = document.querySelector(`.btn-mode[data-mode="${currentMode}"]`);
@@ -300,6 +334,28 @@ document.addEventListener('DOMContentLoaded', function() {
             // Mettre à jour toutes les traductions
             updateAllTranslations();
             
+            // Mettre à jour le texte du dropdown des cordes
+            const stringTriggerValue = document.querySelector('.custom-select-value');
+            if (stringTriggerValue && !stringTriggerValue.hasAttribute('data-i18n')) {
+                // Si ce n'est pas "toutes sélectionnées", mettre à jour le texte avec la nouvelle langue
+                const checkedCount = document.querySelectorAll('[data-string-checkbox]:checked').length;
+                if (checkedCount < 6) {
+                    const stringNames = {
+                        'e': frenchNotation ? 'Mi aigu' : 'e',
+                        'B': frenchNotation ? 'Si' : 'B',
+                        'G': frenchNotation ? 'Sol' : 'G',
+                        'D': frenchNotation ? 'Ré' : 'D',
+                        'A': frenchNotation ? 'La' : 'A',
+                        'E': frenchNotation ? 'Mi grave' : 'E'
+                    };
+                    const checkedBoxes = document.querySelectorAll('[data-string-checkbox]:checked');
+                    const selectedNames = Array.from(checkedBoxes)
+                        .map(cb => stringNames[cb.value])
+                        .join(', ');
+                    stringTriggerValue.textContent = `${checkedCount} ${translate('strings.selected')} : ${selectedNames}`;
+                }
+            }
+            
             // Mettre à jour l'affichage des options
             updateOptionsDisplay();
             
@@ -316,9 +372,10 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Initialisation - Filtre type:', noteTypeFilter, 'Filtre cordes:', stringFilter);
     
     // Fonction utilitaire pour mettre à jour le filtre de cordes
-    function updateStringFilterFromCheckboxes() {
-        return Array.from(document.querySelectorAll('input[name="string"]:checked'))
-            .map(cb => cb.value);
+    function updateStringFilterFromSelect() {
+        const checkboxes = document.querySelectorAll('[data-string-checkbox]:checked');
+        if (!checkboxes || checkboxes.length === 0) return ['e', 'B', 'G', 'D', 'A', 'E'];
+        return Array.from(checkboxes).map(cb => cb.value);
     }
 
     // Éléments pour le récapitulatif des options
@@ -464,29 +521,76 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Gestion du filtre de cordes
-    const stringCheckboxes = document.querySelectorAll('input[name="string"]');
+    // Gestion du filtre de cordes (dropdown custom)
+    const stringSelectTrigger = document.getElementById('stringSelectTrigger');
+    const stringSelectDropdown = document.getElementById('stringSelectDropdown');
+    const stringCheckboxes = document.querySelectorAll('[data-string-checkbox]');
     const toggleAllStringsButton = document.getElementById('toggleAllStrings');
     
+    // Fonction pour mettre à jour le texte du trigger
+    function updateTriggerText() {
+        const checked = document.querySelectorAll('[data-string-checkbox]:checked');
+        const triggerValue = stringSelectTrigger.querySelector('.custom-select-value');
+        
+        if (checked.length === 6) {
+            triggerValue.setAttribute('data-i18n', 'strings.allSelected');
+            triggerValue.textContent = translate('strings.allSelected');
+        } else {
+            triggerValue.removeAttribute('data-i18n');
+            
+            // Créer la liste des noms de cordes selon la notation
+            const stringNames = {
+                'e': frenchNotation ? 'Mi aigu' : 'e',
+                'B': frenchNotation ? 'Si' : 'B',
+                'G': frenchNotation ? 'Sol' : 'G',
+                'D': frenchNotation ? 'Ré' : 'D',
+                'A': frenchNotation ? 'La' : 'A',
+                'E': frenchNotation ? 'Mi grave' : 'E'
+            };
+            
+            const selectedNames = Array.from(checked)
+                .map(cb => stringNames[cb.value])
+                .join(', ');
+            
+            triggerValue.textContent = `${checked.length} ${translate('strings.selected')} : ${selectedNames}`;
+        }
+    }
+    
+    // Ouvrir/fermer le dropdown
+    if (stringSelectTrigger && stringSelectDropdown) {
+        stringSelectTrigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            stringSelectDropdown.classList.toggle('open');
+        });
+        
+        // Fermer le dropdown en cliquant ailleurs
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.custom-select-wrapper')) {
+                stringSelectDropdown.classList.remove('open');
+            }
+        });
+    }
+    
     // Bouton pour tout cocher/décocher
-    if (toggleAllStringsButton) {
+    if (toggleAllStringsButton && stringCheckboxes.length > 0) {
         toggleAllStringsButton.addEventListener('click', function() {
-            const allChecked = Array.from(stringCheckboxes).every(cb => cb.checked);
+            const allChecked = document.querySelectorAll('[data-string-checkbox]:checked').length === stringCheckboxes.length;
             
             if (allChecked) {
-                // Tout décocher sauf une (garder la première)
+                // Tout désélectionner sauf la première option
                 stringCheckboxes.forEach((cb, index) => {
-                    cb.checked = index === 0;
+                    cb.checked = (index === 0);
                 });
-                toggleAllStringsButton.textContent = 'Tout cocher';
+                toggleAllStringsButton.textContent = translate('strings.checkAll');
             } else {
-                // Tout cocher
+                // Tout sélectionner
                 stringCheckboxes.forEach(cb => cb.checked = true);
-                toggleAllStringsButton.textContent = 'Tout décocher';
+                toggleAllStringsButton.textContent = translate('strings.uncheckAll');
             }
             
             // Mettre à jour le filtre
-            stringFilter = updateStringFilterFromCheckboxes();
+            stringFilter = updateStringFilterFromSelect();
+            updateTriggerText();
             updateOptionsDisplay();
             saveGameOptions();
             
@@ -496,28 +600,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    stringCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            // Mettre à jour le tableau des cordes sélectionnées
-            stringFilter = updateStringFilterFromCheckboxes();
-            
-            // Si aucune corde n'est sélectionnée, empêcher la désélection de toutes
-            if (stringFilter.length === 0) {
-                this.checked = true;
-                stringFilter = [this.value];
-                return;
-            }
-            
-            // Mettre à jour l'affichage des options
-            updateOptionsDisplay();
-            saveGameOptions();
-            
-            // Générer une nouvelle question si on est en mode jeu
-            if (waitingForAnswer) {
-                generateQuestion();
-            }
+    // Écouter les changements sur les checkboxes
+    if (stringCheckboxes.length > 0) {
+        stringCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Mettre à jour le tableau des cordes sélectionnées
+                stringFilter = updateStringFilterFromSelect();
+                
+                // Si aucune corde n'est sélectionnée, sélectionner la première
+                if (stringFilter.length === 0) {
+                    stringCheckboxes[0].checked = true;
+                    stringFilter = [stringCheckboxes[0].value];
+                    return;
+                }
+                
+                // Mettre à jour le texte du bouton toggle
+                const allChecked = document.querySelectorAll('[data-string-checkbox]:checked').length === stringCheckboxes.length;
+                if (toggleAllStringsButton) {
+                    toggleAllStringsButton.textContent = allChecked ? 
+                        translate('strings.uncheckAll') : translate('strings.checkAll');
+                }
+                
+                // Mettre à jour le texte du trigger
+                updateTriggerText();
+                
+                // Mettre à jour l'affichage des options
+                updateOptionsDisplay();
+                saveGameOptions();
+                
+                // Générer une nouvelle question si on est en mode jeu
+                if (waitingForAnswer) {
+                    generateQuestion();
+                }
+            });
         });
-    });
+    }
 
     // Mettre à jour l'interface selon le mode
     function updateGameMode() {

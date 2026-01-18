@@ -54,31 +54,37 @@
             <div class="sidebar-section">
                 <h3 data-i18n="strings">Cordes</h3>
                 <button id="toggleAllStrings" class="btn-toggle-all" aria-label="Cocher ou décocher toutes les cordes" data-i18n="strings.uncheckAll">Tout décocher</button>
-                <div class="string-filter">
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="e" checked>
-                        <span>Mi aigu (e)</span>
-                    </label>
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="B" checked>
-                        <span>Si (B)</span>
-                    </label>
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="G" checked>
-                        <span>Sol (G)</span>
-                    </label>
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="D" checked>
-                        <span>Ré (D)</span>
-                    </label>
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="A" checked>
-                        <span>La (A)</span>
-                    </label>
-                    <label class="string-option">
-                        <input type="checkbox" name="string" value="E" checked>
-                        <span>Mi grave (E)</span>
-                    </label>
+                <div class="custom-select-wrapper">
+                    <div class="custom-select-trigger" id="stringSelectTrigger">
+                        <span class="custom-select-value" data-i18n="strings.allSelected">6 cordes sélectionnées</span>
+                        <span class="custom-select-arrow">▼</span>
+                    </div>
+                    <div class="custom-select-dropdown" id="stringSelectDropdown">
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="e" checked data-string-checkbox>
+                            <span>Mi aigu (e)</span>
+                        </label>
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="B" checked data-string-checkbox>
+                            <span>Si (B)</span>
+                        </label>
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="G" checked data-string-checkbox>
+                            <span>Sol (G)</span>
+                        </label>
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="D" checked data-string-checkbox>
+                            <span>Ré (D)</span>
+                        </label>
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="A" checked data-string-checkbox>
+                            <span>La (A)</span>
+                        </label>
+                        <label class="custom-select-option">
+                            <input type="checkbox" value="E" checked data-string-checkbox>
+                            <span>Mi grave (E)</span>
+                        </label>
+                    </div>
                 </div>
             </div>
             

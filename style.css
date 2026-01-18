@@ -271,6 +271,119 @@ h1 {
     border-color: rgba(91, 155, 213, 0.5);
 }
 
+/* Dropdown custom pour les cordes */
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.custom-select-trigger {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(52, 73, 94, 0.5);
+    border: 2px solid #34495e;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.custom-select-trigger:hover {
+    border-color: #4a6278;
+    background: rgba(52, 73, 94, 0.7);
+}
+
+.custom-select-trigger:focus,
+.custom-select-trigger:active {
+    border-color: #5B9BD5;
+    box-shadow: 0 0 0 3px rgba(91, 155, 213, 0.3);
+    background: rgba(52, 73, 94, 0.8);
+}
+
+.custom-select-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.3s ease;
+}
+
+.custom-select-dropdown.open + .custom-select-trigger .custom-select-arrow,
+.custom-select-dropdown.open ~ .custom-select-trigger .custom-select-arrow {
+    transform: rotate(180deg);
+}
+
+.custom-select-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #2c3e50;
+    border: 2px solid #34495e;
+    border-radius: 8px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.custom-select-dropdown.open {
+    max-height: 300px;
+    opacity: 1;
+    overflow-y: auto;
+}
+
+.custom-select-option {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    user-select: none;
+}
+
+.custom-select-option:hover {
+    background: rgba(91, 155, 213, 0.2);
+}
+
+.custom-select-option input[type="checkbox"] {
+    margin-right: 10px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    accent-color: #5B9BD5;
+}
+
+.custom-select-option span {
+    color: #ffffff;
+    font-size: 0.9rem;
+}
+
+.custom-select-dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-thumb {
+    background: rgba(91, 155, 213, 0.6);
+    border-radius: 4px;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-thumb:hover {
+    background: rgba(91, 155, 213, 0.8);
+}
+
 /* Sélection du mode de jeu */
 .game-mode-selector {
     text-align: center;
