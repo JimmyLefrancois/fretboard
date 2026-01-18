@@ -47,7 +47,7 @@ h1 {
 }
 
 /* En-tête avec numéros de frettes */
-.fretboard thead th {
+.fretboard tfoot th {
     padding: 10px;
     text-align: center;
     color: #f0f2f3;
@@ -55,12 +55,12 @@ h1 {
     font-size: 0.9rem;
 }
 
-.fretboard thead th.string-label {
+.fretboard tfoot th.string-label {
     background: transparent;
     color: #f0f2f3;
 }
 
-.fretboard thead th.fret-number {
+.fretboard tfoot th.fret-number {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px 4px 0 0;
 }
