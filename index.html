@@ -109,6 +109,15 @@
                 <!-- Bouton retour paramètres (visible uniquement sur mobile) -->
                 <button id="backToSettings" class="btn-back mobile-only" data-i18n="backToSettings">⚙️ Paramètres</button>
 
+                <div class="game-options" id="gameOptions">
+                    <span class="option-item"><strong data-i18n="options.mode">Mode:</strong> <span id="optionMode">Trouver la note</span></span>
+                    <span class="option-separator">•</span>
+                    <span class="option-item"><strong data-i18n="options.notes">Notes:</strong> <span id="optionNoteType">Toutes</span></span>
+                    <span class="option-separator">•</span>
+                    <span class="option-item"><strong data-i18n="options.strings">Cordes:</strong> <span id="optionStrings">Toutes</span></span>
+                    <span class="option-separator">•</span>
+                    <span class="option-item"><strong data-i18n="options.notation">Notation:</strong> <span id="optionNotation">Française</span></span>
+                </div>
                 <!-- Zone de jeu -->
                 <div class="game-area" id="gameArea">
                     <div class="game-info">
@@ -127,15 +136,6 @@
                                 <span class="mic-text">Micro désactivé</span>
                             </div>
                             <div class="detected-note" id="detectedNote">En attente...</div>
-                        </div>
-                        <div class="game-options" id="gameOptions">
-                            <span class="option-item"><strong data-i18n="options.mode">Mode:</strong> <span id="optionMode">Trouver la note</span></span>
-                            <span class="option-separator">•</span>
-                            <span class="option-item"><strong data-i18n="options.notes">Notes:</strong> <span id="optionNoteType">Toutes</span></span>
-                            <span class="option-separator">•</span>
-                            <span class="option-item"><strong data-i18n="options.strings">Cordes:</strong> <span id="optionStrings">Toutes</span></span>
-                            <span class="option-separator">•</span>
-                            <span class="option-item"><strong data-i18n="options.notation">Notation:</strong> <span id="optionNotation">Française</span></span>
                         </div>
                         <div class="game-stats">
                             <span class="stat"><span data-i18n="stats.score">Score</span> : <strong id="score">0</strong></span>
