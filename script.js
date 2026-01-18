@@ -367,7 +367,14 @@ document.addEventListener('DOMContentLoaded', function() {
         streak = 0;
         updateScore();
         currentQuestion = null;
-        questionElement.textContent = 'Cliquez sur "Nouvelle question" pour commencer';
+        
+        // Adapter le message selon le mode
+        if (currentMode === 'live-guitar') {
+            questionElement.textContent = 'Cliquez sur "Démarrer" pour commencer';
+        } else {
+            questionElement.textContent = 'Cliquez sur "Nouvelle question" pour commencer';
+        }
+        
         waitingForAnswer = false;
         
         // Nettoyer les classes de réponse
