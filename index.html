@@ -13,41 +13,47 @@
     <div class="app-layout">
         <!-- Sidebar gauche -->
         <aside class="sidebar">
-            <h2 class="sidebar-title">Paramètres</h2>
+            <!-- Sélecteur de langue -->
+            <div class="language-selector">
+                <button class="btn-lang active" data-lang="fr" aria-label="Français">🇫🇷 FR</button>
+                <button class="btn-lang" data-lang="en" aria-label="English">🇬🇧 EN</button>
+            </div>
+            
+            <h2 class="sidebar-title" data-i18n="settings">Paramètres</h2>
             
             <!-- Mode de jeu -->
             <div class="sidebar-section">
-                <h3>Mode de jeu</h3>
+                <h3 data-i18n="gameMode">Mode de jeu</h3>
                 <div class="mode-buttons">
-                    <button class="btn-mode" data-mode="practice" aria-label="Mode entraînement libre">Entraînement libre</button>
-                    <button class="btn-mode" data-mode="live-guitar" aria-label="Mode guitare live avec détection audio">🎸 Guitare Live</button>
-                    <button class="btn-mode active" data-mode="find-note" aria-label="Mode trouver la note">Trouver la note</button>
+                    <button class="btn-mode" data-mode="practice" aria-label="Mode entraînement libre" data-i18n="mode.practice">Entraînement libre</button>
+                    <button class="btn-mode" data-mode="live-guitar" aria-label="Mode guitare live avec détection audio">🎸 <span data-i18n="mode.liveGuitar">Guitare Live</span></button>
+                    <button class="btn-mode active" data-mode="find-note" aria-label="Mode trouver la note" data-i18n="mode.findNote">Trouver la note</button>
                 </div>
             </div>
             
             <!-- Type de notes -->
             <div class="sidebar-section">
-                <h3>Type de notes</h3>
+                <h3 data-i18n="noteType">Type de notes</h3>
                 <div class="note-type-filter">
                     <label class="filter-option">
                         <input type="radio" name="noteType" value="both" checked>
-                        <span>Toutes</span>
+                        <span data-i18n="noteType.all">Toutes</span>
                     </label>
                     <label class="filter-option">
                         <input type="radio" name="noteType" value="natural">
-                        <span>Naturelles</span>
+                        <span data-i18n="noteType.natural">Naturelles</span>
                     </label>
                     <label class="filter-option">
                         <input type="radio" name="noteType" value="sharp">
-                        <span>Altérées</span>
+                        <span data-i18n="noteType.sharp">Altérées</span>
                     </label>
                 </div>
             </div>
             
             <!-- Sélection des cordes -->
             <div class="sidebar-section">
-                <h3>Cordes</h3>
-                <button id="toggleAllStrings" class="btn-toggle-all" aria-label="Cocher ou décocher toutes les cordes">Tout décocher</button>
+                <h3 data-i18n="strings">Cordes</h3>
+                <button id="toggleAllStrings" class="btn-toggle-all" aria-label="Cocher ou décocher toutes les cordes" data-i18n="strings.uncheckAll">Tout décocher</button>
                 <div class="string-filter">
                     <label class="string-option">
                         <input type="checkbox" name="string" value="e" checked>
@@ -78,32 +84,32 @@
             
             <!-- Affichage -->
             <div class="sidebar-section">
-                <h3>Affichage</h3>
-                <button id="toggleNotes" class="btn-sidebar" aria-label="Afficher ou cacher les notes sur le manche">Afficher les notes</button>
-                <button id="toggleNotation" class="btn-sidebar" aria-label="Basculer entre notation française et internationale">Notation internationale</button>
+                <h3 data-i18n="display">Affichage</h3>
+                <button id="toggleNotes" class="btn-sidebar" aria-label="Afficher ou cacher les notes sur le manche" data-i18n="display.showNotes">Afficher les notes</button>
+                <button id="toggleNotation" class="btn-sidebar" aria-label="Basculer entre notation française et internationale" data-i18n="display.internationalNotation">Notation internationale</button>
             </div>
             
             <!-- Bouton commencer (visible uniquement sur mobile) -->
             <div class="sidebar-section mobile-only">
-                <button id="startGame" class="btn-start-game">Commencer le jeu</button>
+                <button id="startGame" class="btn-start-game" data-i18n="startGame">Commencer le jeu</button>
             </div>
         </aside>
         
         <!-- Contenu principal -->
         <main class="main-content">
             <div class="container">
-                <h1>Apprendre les Notes du Manche de Guitare</h1>
+                <h1 data-i18n="title">Apprendre les Notes du Manche de Guitare</h1>
                 
                 <!-- Bouton retour paramètres (visible uniquement sur mobile) -->
-                <button id="backToSettings" class="btn-back mobile-only">⚙️ Paramètres</button>
+                <button id="backToSettings" class="btn-back mobile-only" data-i18n="backToSettings">⚙️ Paramètres</button>
 
                 <!-- Zone de jeu -->
                 <div class="game-area" id="gameArea">
                     <div class="game-info">
-                        <div class="question" id="question">Cliquez sur "Nouvelle question" pour commencer</div>
+                        <div class="question" id="question" data-i18n="question.start">Cliquez sur "Nouvelle question" pour commencer</div>
                         <div id="liveGuitarStatus" class="live-guitar-status hidden">
                             <button id="startStopLiveButton" class="btn-live-control">
-                                <span class="btn-icon">▶️</span> Démarrer
+                                <span class="btn-icon">▶️</span> <span data-i18n="liveGuitar.start">Démarrer</span>
                             </button>
                             <div class="mic-indicator">
                                 <span class="mic-icon">🎤</span>
@@ -112,20 +118,20 @@
                             <div class="detected-note" id="detectedNote">En attente...</div>
                         </div>
                         <div class="game-options" id="gameOptions">
-                            <span class="option-item"><strong>Mode:</strong> <span id="optionMode">Trouver la note</span></span>
+                            <span class="option-item"><strong data-i18n="options.mode">Mode:</strong> <span id="optionMode">Trouver la note</span></span>
                             <span class="option-separator">•</span>
-                            <span class="option-item"><strong>Notes:</strong> <span id="optionNoteType">Toutes</span></span>
+                            <span class="option-item"><strong data-i18n="options.notes">Notes:</strong> <span id="optionNoteType">Toutes</span></span>
                             <span class="option-separator">•</span>
-                            <span class="option-item"><strong>Cordes:</strong> <span id="optionStrings">Toutes</span></span>
+                            <span class="option-item"><strong data-i18n="options.strings">Cordes:</strong> <span id="optionStrings">Toutes</span></span>
                             <span class="option-separator">•</span>
-                            <span class="option-item"><strong>Notation:</strong> <span id="optionNotation">Française</span></span>
+                            <span class="option-item"><strong data-i18n="options.notation">Notation:</strong> <span id="optionNotation">Française</span></span>
                         </div>
                         <div class="game-stats">
-                            <span class="stat">Score : <strong id="score">0</strong></span>
-                            <span class="stat">Streak : <strong id="streak">0</strong> 🔥</span>
+                            <span class="stat"><span data-i18n="stats.score">Score</span> : <strong id="score">0</strong></span>
+                            <span class="stat"><span data-i18n="stats.streak">Streak</span> : <strong id="streak">0</strong> 🔥</span>
                         </div>
                     </div>
-                    <button id="newQuestion" class="btn-primary">Nouvelle question</button>
+                    <button id="newQuestion" class="btn-primary" data-i18n="newQuestion">Nouvelle question</button>
                 </div>
         
         <div class="fretboard-container">

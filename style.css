@@ -12,6 +12,41 @@ body {
     color: #24292f;
 }
 
+/* Styles pour le sélecteur de langue */
+.language-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-lang {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-lang:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-lang.active {
+    background: linear-gradient(135deg, #5B9BD5 0%, #3A7BC8 100%);
+    color: #ffffff;
+    border-color: #3A7BC8;
+    box-shadow: 0 2px 8px rgba(91, 155, 213, 0.4);
+}
+
 /* Layout principal avec sidebar */
 .app-layout {
     display: flex;
