@@ -47,7 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'summary.sharp': 'Altérées',
             'summary.french': 'Française',
             'summary.international': 'Internationale',
-            'questionText': 'Où est {note} sur la corde de {string} ?'
+            'questionText': 'Où est {note} sur la corde de {string} ?',
+            'error.noNotes': 'Aucune note disponible avec ce filtre !'
         },
         en: {
             settings: 'Settings',
@@ -92,7 +93,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'summary.sharp': 'Accidentals',
             'summary.french': 'French',
             'summary.international': 'International',
-            'questionText': 'Where is {note} on the {string} string?'
+            'questionText': 'Where is {note} on the {string} string?',
+            'error.noNotes': 'No notes available with this filter!'
         }
     };
     
@@ -106,6 +108,24 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
             element.textContent = translate(key);
+        });
+        
+        // Mettre à jour les labels des cordes dans la sidebar
+        updateStringLabels();
+    }
+    
+    // Fonction pour mettre à jour les labels des cordes selon la langue
+    function updateStringLabels() {
+        const stringOptions = document.querySelectorAll('.string-option span');
+        const stringValues = ['e', 'B', 'G', 'D', 'A', 'E'];
+        
+        stringOptions.forEach((span, index) => {
+            const stringValue = stringValues[index];
+            if (stringValue && stringNames[stringValue]) {
+                const name = currentLanguage === 'fr' ? stringNames[stringValue].fr : stringNames[stringValue].int;
+                const notation = stringValue;
+                span.textContent = `${name} (${notation})`;
+            }
         });
     }
     
@@ -301,12 +321,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     noteSpan.textContent = fret.dataset.noteInt;
                 }
             });
-            toggleNotationButton.textContent = 'Notation française';
+            toggleNotationButton.textContent = translate('display.frenchNotation');
         }
     }
     
     // Fin de l'initialisation
     isInitializing = false;
+    
+    // Initialiser les labels des cordes selon la langue
+    updateStringLabels();
     
     // Gestion du changement de langue
     const languageButtons = document.querySelectorAll('.btn-lang');
@@ -409,15 +432,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (stringFilter.length === 6) {
             optionStringsElement.textContent = translate('summary.all');
         } else {
-            const stringLabels = {
-                'e': 'Mi aigu',
-                'B': 'Si',
-                'G': 'Sol',
-                'D': 'Ré',
-                'A': 'La',
-                'E': 'Mi grave'
-            };
-            const selectedStrings = stringFilter.map(s => stringLabels[s]).join(', ');
+            // Utiliser stringNames avec la langue actuelle pour afficher les noms de cordes
+            const selectedStrings = stringFilter.map(s => {
+                const name = currentLanguage === 'fr' ? stringNames[s].fr : stringNames[s].int;
+                return name;
+            }).join(', ');
             optionStringsElement.textContent = selectedStrings;
         }
         
@@ -425,10 +444,7 @@ document.addEventListener('DOMContentLoaded', function() {
         optionNotationElement.textContent = frenchNotation ? translate('summary.french') : translate('summary.international');
     }
 
-    // Initialiser l'affichage des options
-    updateOptionsDisplay();
-
-    // Données pour les notes
+    // Données pour les noms de cordes (doit être déclaré avant updateOptionsDisplay)
     const stringNames = {
         'e': { fr: 'Mi aigu', int: 'High E' },
         'B': { fr: 'Si', int: 'B' },
@@ -438,16 +454,19 @@ document.addEventListener('DOMContentLoaded', function() {
         'E': { fr: 'Mi grave', int: 'Low E' }
     };
 
+    // Initialiser l'affichage des options
+    updateOptionsDisplay();
+
     // Fonction pour basculer l'affichage des notes
     toggleButton.addEventListener('click', function() {
         notesVisible = !notesVisible;
         
         if (notesVisible) {
             fretboard.classList.add('show-notes');
-            toggleButton.textContent = 'Cacher les notes';
+            toggleButton.textContent = translate('display.hideNotes');
         } else {
             fretboard.classList.remove('show-notes');
-            toggleButton.textContent = 'Afficher les notes';
+            toggleButton.textContent = translate('display.showNotes');
         }
     });
 
@@ -463,10 +482,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (noteSpan) {
                 if (frenchNotation) {
                     noteSpan.textContent = fret.dataset.noteFr;
-                    toggleNotationButton.textContent = 'Notation internationale';
+                    toggleNotationButton.textContent = translate('display.internationalNotation');
                 } else {
                     noteSpan.textContent = fret.dataset.noteInt;
-                    toggleNotationButton.textContent = 'Notation française';
+                    toggleNotationButton.textContent = translate('display.frenchNotation');
                 }
             }
         });
@@ -658,7 +677,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Réinitialiser le bouton start/stop
         const startStopLiveButton = document.getElementById('startStopLiveButton');
         if (startStopLiveButton) {
-            startStopLiveButton.innerHTML = '<span class="btn-icon">▶️</span> Démarrer';
+            startStopLiveButton.innerHTML = `<span class="btn-icon">▶️</span> <span data-i18n="liveGuitar.start">${translate('liveGuitar.start')}</span>`;
             startStopLiveButton.classList.remove('active');
         }
         
@@ -747,7 +766,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Vérifier qu'il y a des cases disponibles
         if (allFrets.length === 0) {
-            questionElement.textContent = 'Aucune note disponible avec ce filtre !';
+            questionElement.textContent = translate('error.noNotes');
             waitingForAnswer = false;
             return;
         }
