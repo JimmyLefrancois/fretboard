@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const scoreElement = document.getElementById('score');
     const streakElement = document.getElementById('streak');
     const gameArea = document.getElementById('gameArea');
+    const startGameButton = document.getElementById('startGame');
+    const backToSettingsButton = document.getElementById('backToSettings');
     
     let notesVisible = false;
     let frenchNotation = true; // Par défaut, notation française
@@ -272,6 +274,24 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateScore() {
         scoreElement.textContent = score;
         streakElement.textContent = streak;
+    }
+
+    // Gestion mobile : bouton commencer le jeu
+    if (startGameButton) {
+        startGameButton.addEventListener('click', function() {
+            document.body.classList.add('mobile-game-active');
+            // Générer une première question si en mode "find-note"
+            if (currentMode === 'find-note') {
+                generateQuestion();
+            }
+        });
+    }
+
+    // Gestion mobile : bouton retour paramètres
+    if (backToSettingsButton) {
+        backToSettingsButton.addEventListener('click', function() {
+            document.body.classList.remove('mobile-game-active');
+        });
     }
 
     // Initialiser le mode par défaut
