@@ -313,6 +313,13 @@ document.addEventListener('DOMContentLoaded', function() {
             stopMicrophone();
         }
         
+        // Réinitialiser le bouton start/stop
+        const startStopLiveButton = document.getElementById('startStopLiveButton');
+        if (startStopLiveButton) {
+            startStopLiveButton.innerHTML = '<span class="btn-icon">▶️</span> Démarrer';
+            startStopLiveButton.classList.remove('active');
+        }
+        
         // Masquer les éléments spécifiques
         if (liveGuitarStatus) {
             liveGuitarStatus.classList.add('hidden');
@@ -339,12 +346,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (fretboardContainer) fretboardContainer.style.display = 'none'; // Cacher le fretboard
             resetGame();
             
-            console.log('Démarrage du mode Guitare Live...');
+            console.log('Mode Guitare Live - En attente du démarrage...');
             
-            // Démarrer le microphone après un court délai
-            setTimeout(() => {
-                startMicrophoneForLiveMode();
-            }, 100);
+            // Ne pas démarrer automatiquement, attendre le clic sur le bouton
         }
         
         // Afficher/masquer le bouton nouvelle question selon le mode
@@ -500,6 +504,25 @@ document.addEventListener('DOMContentLoaded', function() {
     updateGameMode();
 
     // ========== MODE GUITARE LIVE - Détection audio ==========
+    
+    // Bouton Start/Stop pour le mode Guitare Live
+    const startStopLiveButton = document.getElementById('startStopLiveButton');
+    if (startStopLiveButton) {
+        startStopLiveButton.addEventListener('click', function() {
+            if (isListening) {
+                // Arrêter le micro
+                stopMicrophone();
+                startStopLiveButton.innerHTML = '<span class="btn-icon">▶️</span> Démarrer';
+                startStopLiveButton.classList.remove('active');
+                questionElement.textContent = 'Cliquez sur "Démarrer" pour commencer';
+            } else {
+                // Démarrer le micro
+                startStopLiveButton.innerHTML = '<span class="btn-icon">⏸️</span> Arrêter';
+                startStopLiveButton.classList.add('active');
+                startMicrophoneForLiveMode();
+            }
+        });
+    }
     
     // Fonction wrapper pour démarrer le micro en mode live
     async function startMicrophoneForLiveMode() {
