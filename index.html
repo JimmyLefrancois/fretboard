@@ -77,17 +77,33 @@
                 <button id="toggleNotes" class="btn-sidebar">Afficher les notes</button>
                 <button id="toggleNotation" class="btn-sidebar">Notation internationale</button>
             </div>
+            
+            <!-- Bouton commencer (visible uniquement sur mobile) -->
+            <div class="sidebar-section mobile-only">
+                <button id="startGame" class="btn-start-game">Commencer le jeu</button>
+            </div>
         </aside>
         
         <!-- Contenu principal -->
         <main class="main-content">
             <div class="container">
                 <h1>Apprendre les Notes du Manche de Guitare</h1>
+                
+                <!-- Bouton retour paramètres (visible uniquement sur mobile) -->
+                <button id="backToSettings" class="btn-back mobile-only">⚙️ Paramètres</button>
 
                 <!-- Zone de jeu -->
                 <div class="game-area" id="gameArea">
                     <div class="game-info">
-                        <div class="question" id="question">Cliquez sur "Nouvelle question" pour commencer</div>
+                        <div class="game-options" id="gameOptions">
+                            <span class="option-item"><strong>Mode:</strong> <span id="optionMode">Trouver la note</span></span>
+                            <span class="option-separator">•</span>
+                            <span class="option-item"><strong>Notes:</strong> <span id="optionNoteType">Toutes</span></span>
+                            <span class="option-separator">•</span>
+                            <span class="option-item"><strong>Cordes:</strong> <span id="optionStrings">Toutes</span></span>
+                            <span class="option-separator">•</span>
+                            <span class="option-item"><strong>Notation:</strong> <span id="optionNotation">Française</span></span>
+                        </div>
                         <div class="game-stats">
                             <span class="stat">Score : <strong id="score">0</strong></span>
                             <span class="stat">Streak : <strong id="streak">0</strong> 🔥</span>
@@ -95,6 +111,8 @@
                     </div>
                     <button id="newQuestion" class="btn-primary">Nouvelle question</button>
                 </div>
+                <p class="question text-center" id="question">Cliquez sur "Nouvelle question" pour commencer</p>
+
         
         <div class="fretboard-container">
             <table class="fretboard">
