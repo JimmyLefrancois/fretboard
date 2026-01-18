@@ -29,6 +29,16 @@ document.addEventListener('DOMContentLoaded', function() {
     let pitchDetectionInterval = null;
     let isListening = false;
     
+    // Pré-charger le son de notification
+    const successSound = new Audio('sounds/bell.mp3');
+    successSound.volume = 0.7;
+    
+    // Fonction pour jouer un son de notification
+    function playSuccessSound() {
+        successSound.currentTime = 0; // Réinitialiser au début
+        successSound.play().catch(err => console.log('Erreur lecture audio:', err));
+    }
+    
     // Initialiser les filtres en lisant l'état actuel des formulaires
     let noteTypeFilter = document.querySelector('input[name="noteType"]:checked')?.value || 'both';
     let stringFilter = Array.from(document.querySelectorAll('input[name="string"]:checked')).map(cb => cb.value);
@@ -348,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function() {
             element: randomFret
         };
         
-        questionElement.textContent = `Où est le ${targetNote} sur la corde de ${stringName} ?`;
+        questionElement.innerHTML = `Où est <span class="highlight-note">${targetNote}</span> sur la corde de <span class="highlight-string">${stringName}</span> ?`;
         waitingForAnswer = true;
     }
 
@@ -376,6 +386,9 @@ document.addEventListener('DOMContentLoaded', function() {
             score += 10;
             streak++;
             updateScore();
+            
+            // Jouer le son de notification
+            playSuccessSound();
             
             // Nouvelle question après un délai
             setTimeout(() => {
@@ -609,6 +622,9 @@ document.addEventListener('DOMContentLoaded', function() {
             score++;
             streak++;
             updateScore();
+            
+            // Jouer le son de notification
+            playSuccessSound();
             
             currentQuestion.element.classList.add('correct-answer');
             
