@@ -29,6 +29,46 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Initialisation - Filtre type:', noteTypeFilter, 'Filtre cordes:', stringFilter);
 
+    // Éléments pour le récapitulatif des options
+    const optionModeElement = document.getElementById('optionMode');
+    const optionNoteTypeElement = document.getElementById('optionNoteType');
+    const optionStringsElement = document.getElementById('optionStrings');
+    const optionNotationElement = document.getElementById('optionNotation');
+
+    // Fonction pour mettre à jour le récapitulatif des options
+    function updateOptionsDisplay() {
+        // Mode de jeu
+        const modeText = currentMode === 'practice' ? 'Entraînement libre' : 'Trouver la note';
+        optionModeElement.textContent = modeText;
+        
+        // Type de notes
+        const noteTypeText = noteTypeFilter === 'both' ? 'Toutes' : 
+                            noteTypeFilter === 'natural' ? 'Naturelles' : 'Altérées';
+        optionNoteTypeElement.textContent = noteTypeText;
+        
+        // Cordes sélectionnées
+        if (stringFilter.length === 6) {
+            optionStringsElement.textContent = 'Toutes';
+        } else {
+            const stringLabels = {
+                'e': 'Mi aigu',
+                'B': 'Si',
+                'G': 'Sol',
+                'D': 'Ré',
+                'A': 'La',
+                'E': 'Mi grave'
+            };
+            const selectedStrings = stringFilter.map(s => stringLabels[s]).join(', ');
+            optionStringsElement.textContent = selectedStrings;
+        }
+        
+        // Notation
+        optionNotationElement.textContent = frenchNotation ? 'Française' : 'Internationale';
+    }
+
+    // Initialiser l'affichage des options
+    updateOptionsDisplay();
+
     // Données pour les notes
     const stringNames = {
         'e': { fr: 'Mi aigu', int: 'High E' },
@@ -76,6 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentQuestion) {
             generateQuestion();
         }
+        
+        // Mettre à jour l'affichage des options
+        updateOptionsDisplay();
     });
 
     // Gestion des modes de jeu
@@ -92,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Mettre à jour l'interface
             updateGameMode();
+            updateOptionsDisplay();
         });
     });
 
@@ -101,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const updateFilter = function() {
             noteTypeFilter = radio.value;
             console.log('Filtre de type de notes changé:', noteTypeFilter);
+            updateOptionsDisplay();
             // Si une question est en cours, en générer une nouvelle avec le nouveau filtre
             if (currentMode === 'find-note' && waitingForAnswer) {
                 generateQuestion();
@@ -133,6 +178,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 stringFilter = [this.value];
                 return;
             }
+            
+            // Mettre à jour l'affichage des options
+            updateOptionsDisplay();
             
             // Générer une nouvelle question si on est en mode jeu
             if (waitingForAnswer) {

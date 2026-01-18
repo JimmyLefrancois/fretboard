@@ -344,6 +344,42 @@ h1 {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.game-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #F0F7FF 0%, #E6F2FF 100%);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 0.85rem;
+    color: #4d4d4d;
+}
+
+.option-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.option-item strong {
+    color: #1f2328;
+    font-weight: 600;
+}
+
+.option-item span {
+    color: #5B9BD5;
+    font-weight: 600;
+}
+
+.option-separator {
+    color: #5B9BD5;
+    font-weight: 700;
+}
+
+
 .game-stats {
     display: flex;
     gap: 30px;
