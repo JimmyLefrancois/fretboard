@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const gameArea = document.getElementById('gameArea');
     const startGameButton = document.getElementById('startGame');
     const backToSettingsButton = document.getElementById('backToSettings');
+    const liveGuitarStatus = document.getElementById('liveGuitarStatus');
+    const detectedNoteElement = document.getElementById('detectedNote');
     
     let notesVisible = false;
     let frenchNotation = true; // Par défaut, notation française
@@ -19,6 +21,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let score = 0;
     let streak = 0;
     let waitingForAnswer = false;
+    
+    // Variables pour le mode Guitare Live
+    let audioContext = null;
+    let analyser = null;
+    let microphone = null;
+    let pitchDetectionInterval = null;
+    let isListening = false;
     
     // Initialiser les filtres en lisant l'état actuel des formulaires
     let noteTypeFilter = document.querySelector('input[name="noteType"]:checked')?.value || 'both';
@@ -38,7 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour mettre à jour le récapitulatif des options
     function updateOptionsDisplay() {
         // Mode de jeu
-        const modeText = currentMode === 'practice' ? 'Entraînement libre' : 'Trouver la note';
+        const modeText = currentMode === 'practice' ? 'Entraînement libre' : 
+                        currentMode === 'live-guitar' ? 'Guitare Live' : 'Trouver la note';
         optionModeElement.textContent = modeText;
         
         // Type de notes
@@ -132,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Changer le mode
             currentMode = this.dataset.mode;
+            console.log('Changement de mode vers:', currentMode);
             
             // Mettre à jour l'interface
             updateGameMode();
@@ -166,7 +177,38 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Gestion du filtre de cordes
-    document.querySelectorAll('input[name="string"]').forEach(checkbox => {
+    const stringCheckboxes = document.querySelectorAll('input[name="string"]');
+    const toggleAllStringsButton = document.getElementById('toggleAllStrings');
+    
+    // Bouton pour tout cocher/décocher
+    if (toggleAllStringsButton) {
+        toggleAllStringsButton.addEventListener('click', function() {
+            const allChecked = Array.from(stringCheckboxes).every(cb => cb.checked);
+            
+            if (allChecked) {
+                // Tout décocher sauf une (garder la première)
+                stringCheckboxes.forEach((cb, index) => {
+                    cb.checked = index === 0;
+                });
+                toggleAllStringsButton.textContent = 'Tout cocher';
+            } else {
+                // Tout cocher
+                stringCheckboxes.forEach(cb => cb.checked = true);
+                toggleAllStringsButton.textContent = 'Tout décocher';
+            }
+            
+            // Mettre à jour le filtre
+            stringFilter = Array.from(document.querySelectorAll('input[name="string"]:checked'))
+                .map(cb => cb.value);
+            updateOptionsDisplay();
+            
+            if (waitingForAnswer) {
+                generateQuestion();
+            }
+        });
+    }
+    
+    stringCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             // Mettre à jour le tableau des cordes sélectionnées
             stringFilter = Array.from(document.querySelectorAll('input[name="string"]:checked'))
@@ -192,17 +234,54 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mettre à jour l'interface selon le mode
     function updateGameMode() {
         // Réinitialiser
-        document.body.classList.remove('game-mode-practice', 'game-mode-find-note');
+        document.body.classList.remove('game-mode-practice', 'game-mode-find-note', 'game-mode-live-guitar');
+        
+        // Arrêter le micro si actif
+        if (isListening) {
+            stopMicrophone();
+        }
+        
+        // Masquer les éléments spécifiques
+        if (liveGuitarStatus) {
+            liveGuitarStatus.classList.add('hidden');
+        }
+        
+        const fretboardContainer = document.querySelector('.fretboard-container');
         
         if (currentMode === 'practice') {
             // Mode entraînement libre
             gameArea.classList.add('hidden');
             document.body.classList.add('game-mode-practice');
+            if (fretboardContainer) fretboardContainer.style.display = 'block';
         } else if (currentMode === 'find-note') {
             // Mode trouver la note
             gameArea.classList.remove('hidden');
             document.body.classList.add('game-mode-find-note');
+            if (fretboardContainer) fretboardContainer.style.display = 'block';
             resetGame();
+        } else if (currentMode === 'live-guitar') {
+            // Mode guitare live
+            gameArea.classList.remove('hidden');
+            document.body.classList.add('game-mode-live-guitar');
+            if (liveGuitarStatus) liveGuitarStatus.classList.remove('hidden');
+            if (fretboardContainer) fretboardContainer.style.display = 'none'; // Cacher le fretboard
+            resetGame();
+            
+            console.log('Démarrage du mode Guitare Live...');
+            
+            // Démarrer le microphone après un court délai
+            setTimeout(() => {
+                startMicrophoneForLiveMode();
+            }, 100);
+        }
+        
+        // Afficher/masquer le bouton nouvelle question selon le mode
+        if (newQuestionButton) {
+            if (currentMode === 'live-guitar') {
+                newQuestionButton.style.display = 'none';
+            } else if (currentMode === 'find-note') {
+                newQuestionButton.style.display = 'inline-block';
+            }
         }
     }
 
@@ -344,4 +423,202 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialiser le mode par défaut
     updateGameMode();
+
+    // ========== MODE GUITARE LIVE - Détection audio ==========
+    
+    // Fonction wrapper pour démarrer le micro en mode live
+    async function startMicrophoneForLiveMode() {
+        console.log('Demande d\'accès au microphone...');
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            console.log('Accès au microphone accordé !');
+            
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            microphone = audioContext.createMediaStreamSource(stream);
+            
+            analyser.fftSize = 4096;
+            microphone.connect(analyser);
+            
+            isListening = true;
+            updateMicStatus(true);
+            
+            // Démarrer la détection de pitch
+            pitchDetectionInterval = setInterval(detectPitch, 100);
+            
+            // Générer la première question
+            generateQuestion();
+            
+        } catch (error) {
+            console.error('Erreur d\'accès au microphone:', error);
+            alert('Impossible d\'accéder au microphone. Veuillez autoriser l\'accès dans les paramètres de votre navigateur.');
+            // Retourner au mode précédent
+            currentMode = 'find-note';
+            updateGameMode();
+        }
+    }
+    
+    // Table de correspondance entre fréquences et notes
+    const noteFrequencies = {
+        'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13,
+        'E': 329.63, 'F': 349.23, 'F#': 369.99, 'G': 392.00,
+        'G#': 415.30, 'A': 440.00, 'A#': 466.16, 'B': 493.88
+    };
+
+    // Fonction pour démarrer l'écoute du microphone
+    async function startMicrophone() {
+        return startMicrophoneForLiveMode();
+    }
+
+    // Fonction pour arrêter l'écoute
+    function stopMicrophone() {
+        if (pitchDetectionInterval) {
+            clearInterval(pitchDetectionInterval);
+            pitchDetectionInterval = null;
+        }
+        
+        if (microphone) {
+            microphone.disconnect();
+            microphone = null;
+        }
+        
+        if (audioContext) {
+            audioContext.close();
+            audioContext = null;
+        }
+        
+        isListening = false;
+        updateMicStatus(false);
+    }
+
+    // Mettre à jour le statut du micro
+    function updateMicStatus(active) {
+        const micIndicator = document.querySelector('.mic-indicator');
+        const micText = document.querySelector('.mic-text');
+        
+        if (micIndicator && micText) {
+            if (active) {
+                micIndicator.classList.add('active');
+                micText.textContent = 'Micro actif - Jouez !';
+            } else {
+                micIndicator.classList.remove('active');
+                micText.textContent = 'Micro désactivé';
+            }
+        }
+    }
+
+    // Détection de la fréquence dominante (pitch detection)
+    function detectPitch() {
+        if (!analyser || !isListening || !currentQuestion) return;
+
+        const bufferLength = analyser.fftSize;
+        const buffer = new Float32Array(bufferLength);
+        analyser.getFloatTimeDomainData(buffer);
+
+        // Algorithme autocorrelation pour détecter la fréquence
+        const frequency = autoCorrelate(buffer, audioContext.sampleRate);
+        
+        if (frequency > 0) {
+            const detectedNote = frequencyToNote(frequency);
+            displayDetectedNote(detectedNote);
+            checkLiveNote(detectedNote);
+        }
+    }
+
+    // Algorithme d'autocorrélation pour détecter la fréquence
+    function autoCorrelate(buffer, sampleRate) {
+        const SIZE = buffer.length;
+        const MAX_SAMPLES = Math.floor(SIZE / 2);
+        let best_offset = -1;
+        let best_correlation = 0;
+        let rms = 0;
+
+        // Calculer RMS (Root Mean Square)
+        for (let i = 0; i < SIZE; i++) {
+            const val = buffer[i];
+            rms += val * val;
+        }
+        rms = Math.sqrt(rms / SIZE);
+
+        // Pas assez de signal
+        if (rms < 0.01) return -1;
+
+        // Trouver le pic de corrélation
+        let lastCorrelation = 1;
+        for (let offset = 1; offset < MAX_SAMPLES; offset++) {
+            let correlation = 0;
+
+            for (let i = 0; i < MAX_SAMPLES; i++) {
+                correlation += Math.abs(buffer[i] - buffer[i + offset]);
+            }
+
+            correlation = 1 - (correlation / MAX_SAMPLES);
+
+            if (correlation > 0.9 && correlation > lastCorrelation) {
+                const foundGoodCorrelation = correlation > best_correlation;
+                if (foundGoodCorrelation) {
+                    best_correlation = correlation;
+                    best_offset = offset;
+                }
+            }
+
+            lastCorrelation = correlation;
+        }
+
+        if (best_correlation > 0.01) {
+            return sampleRate / best_offset;
+        }
+
+        return -1;
+    }
+
+    // Convertir une fréquence en note
+    function frequencyToNote(frequency) {
+        const A4 = 440;
+        const C0 = A4 * Math.pow(2, -4.75);
+        const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        
+        const h = Math.round(12 * Math.log2(frequency / C0));
+        const octave = Math.floor(h / 12);
+        const n = h % 12;
+        
+        return noteNames[n];
+    }
+
+    // Afficher la note détectée
+    function displayDetectedNote(note) {
+        if (detectedNoteElement) {
+            detectedNoteElement.textContent = note || 'En attente...';
+        }
+    }
+
+    // Vérifier si la note jouée correspond
+    function checkLiveNote(detectedNote) {
+        if (!currentQuestion || !waitingForAnswer || !detectedNoteElement) return;
+
+        const expectedNote = currentQuestion.element.dataset.noteInt;
+        
+        if (detectedNote === expectedNote) {
+            // Désactiver immédiatement pour éviter les validations multiples
+            waitingForAnswer = false;
+            
+            // Note correcte !
+            detectedNoteElement.classList.add('correct');
+            detectedNoteElement.classList.remove('wrong');
+            
+            score++;
+            streak++;
+            updateScore();
+            
+            currentQuestion.element.classList.add('correct-answer');
+            
+            setTimeout(() => {
+                currentQuestion.element.classList.remove('correct-answer');
+                if (detectedNoteElement) {
+                    detectedNoteElement.classList.remove('correct');
+                }
+                generateQuestion();
+            }, 1500);
+        }
+    }
 });
