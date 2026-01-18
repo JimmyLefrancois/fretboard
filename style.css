@@ -446,6 +446,24 @@ h1 {
     display: none;
 }
 
+/* Zone de question juste au-dessus du fretboard */
+.game-question-area {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.game-question-area .btn-primary {
+    margin-bottom: 15px;
+}
+
+.game-question-area .question {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0a466b;
+    padding: 15px 15px 0 15px;
+    border-radius: 8px;
+}
+
 .game-options {
     margin-bottom: 20px;
     padding: 15px;
@@ -511,7 +529,7 @@ h1 {
     font-size: 1.5rem;
     font-weight: 700;
     color: #0a466b;
-    padding: 15px;
+    /* padding: 15px; */
     /* background: #F5F5E8; */
     border-radius: 8px;
     /* box-shadow: 0 2px 8px rgba(10, 70, 107, 0.15); */

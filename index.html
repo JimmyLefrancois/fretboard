@@ -112,7 +112,6 @@
                 <!-- Zone de jeu -->
                 <div class="game-area" id="gameArea">
                     <div class="game-info">
-                        <div class="question" id="question" data-i18n="question.start">Cliquez sur "Nouvelle question" pour commencer</div>
                         <div id="liveGuitarStatus" class="live-guitar-status hidden">
                             <button id="startStopLiveButton" class="btn-live-control">
                                 <span class="btn-icon">▶️</span> <span data-i18n="liveGuitar.start">Démarrer</span>
@@ -143,7 +142,12 @@
                             <span class="stat"><span data-i18n="stats.streak">Streak</span> : <strong id="streak">0</strong> 🔥</span>
                         </div>
                     </div>
+                </div>
+
+                <!-- Question et bouton juste au-dessus du fretboard -->
+                <div class="game-question-area">
                     <button id="newQuestion" class="btn-primary" data-i18n="newQuestion">Nouvelle question</button>
+                    <div class="question" id="question" data-i18n="question.start">Cliquez sur "Nouvelle question" pour commencer</div>
                 </div>
         
         <div class="fretboard-container">
