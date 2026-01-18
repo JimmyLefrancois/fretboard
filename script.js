@@ -1,5 +1,108 @@
 // Attendre que le DOM soit chargé
 document.addEventListener('DOMContentLoaded', function() {
+    // Système de traduction
+    let currentLanguage = 'fr';
+    
+    const translations = {
+        fr: {
+            settings: 'Paramètres',
+            gameMode: 'Mode de jeu',
+            'mode.practice': 'Entraînement libre',
+            'mode.liveGuitar': 'Guitare Live',
+            'mode.findNote': 'Trouver la note',
+            noteType: 'Type de notes',
+            'noteType.all': 'Toutes',
+            'noteType.natural': 'Naturelles',
+            'noteType.sharp': 'Altérées',
+            strings: 'Cordes',
+            'strings.checkAll': 'Tout cocher',
+            'strings.uncheckAll': 'Tout décocher',
+            display: 'Affichage',
+            'display.showNotes': 'Afficher les notes',
+            'display.hideNotes': 'Cacher les notes',
+            'display.internationalNotation': 'Notation internationale',
+            'display.frenchNotation': 'Notation française',
+            startGame: 'Commencer le jeu',
+            title: 'Apprendre les Notes du Manche de Guitare',
+            backToSettings: '⚙️ Paramètres',
+            'question.start': 'Cliquez sur "Nouvelle question" pour commencer',
+            'question.startLive': 'Cliquez sur "Démarrer" pour commencer',
+            'liveGuitar.start': 'Démarrer',
+            'liveGuitar.stop': 'Arrêter',
+            'options.mode': 'Mode:',
+            'options.notes': 'Notes:',
+            'options.strings': 'Cordes:',
+            'options.notation': 'Notation:',
+            'stats.score': 'Score',
+            'stats.streak': 'Streak',
+            newQuestion: 'Nouvelle question',
+            'mic.active': 'Micro actif - Jouez !',
+            'mic.inactive': 'Micro désactivé',
+            'detected.waiting': 'En attente...',
+            'summary.all': 'Toutes',
+            'summary.natural': 'Naturelles',
+            'summary.sharp': 'Altérées',
+            'summary.french': 'Française',
+            'summary.international': 'Internationale',
+            'questionText': 'Où est {note} sur la corde de {string} ?'
+        },
+        en: {
+            settings: 'Settings',
+            gameMode: 'Game Mode',
+            'mode.practice': 'Free Practice',
+            'mode.liveGuitar': 'Live Guitar',
+            'mode.findNote': 'Find the Note',
+            noteType: 'Note Type',
+            'noteType.all': 'All',
+            'noteType.natural': 'Natural',
+            'noteType.sharp': 'Accidentals',
+            strings: 'Strings',
+            'strings.checkAll': 'Check all',
+            'strings.uncheckAll': 'Uncheck all',
+            display: 'Display',
+            'display.showNotes': 'Show notes',
+            'display.hideNotes': 'Hide notes',
+            'display.internationalNotation': 'International notation',
+            'display.frenchNotation': 'French notation',
+            startGame: 'Start game',
+            title: 'Learn Guitar Fretboard Notes',
+            backToSettings: '⚙️ Settings',
+            'question.start': 'Click "New question" to start',
+            'question.startLive': 'Click "Start" to begin',
+            'liveGuitar.start': 'Start',
+            'liveGuitar.stop': 'Stop',
+            'options.mode': 'Mode:',
+            'options.notes': 'Notes:',
+            'options.strings': 'Strings:',
+            'options.notation': 'Notation:',
+            'stats.score': 'Score',
+            'stats.streak': 'Streak',
+            newQuestion: 'New question',
+            'mic.active': 'Microphone active - Play!',
+            'mic.inactive': 'Microphone inactive',
+            'detected.waiting': 'Waiting...',
+            'summary.all': 'All',
+            'summary.natural': 'Natural',
+            'summary.sharp': 'Accidentals',
+            'summary.french': 'French',
+            'summary.international': 'International',
+            'questionText': 'Where is {note} on the {string} string?'
+        }
+    };
+    
+    // Fonction pour traduire
+    function translate(key) {
+        return translations[currentLanguage][key] || key;
+    }
+    
+    // Fonction pour mettre à jour toutes les traductions
+    function updateAllTranslations() {
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            element.textContent = translate(key);
+        });
+    }
+    
     const toggleButton = document.getElementById('toggleNotes');
     const toggleNotationButton = document.getElementById('toggleNotation');
     const fretboard = document.querySelector('.fretboard');
@@ -67,7 +170,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 noteTypeFilter: noteTypeFilter,
                 stringFilter: stringFilter,
                 frenchNotation: frenchNotation,
-                currentMode: currentMode
+                currentMode: currentMode,
+                language: currentLanguage
             };
             localStorage.setItem('guitarGameOptions', JSON.stringify(options));
         } catch (e) {
@@ -102,6 +206,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Charger les options sauvegardées
     const savedOptions = loadGameOptions();
+    
+    // Charger la langue si sauvegardée
+    if (savedOptions?.language) {
+        currentLanguage = savedOptions.language;
+        // Mettre à jour le bouton de langue actif
+        document.querySelectorAll('.btn-lang').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === currentLanguage);
+        });
+        updateAllTranslations();
+    }
     
     // Initialiser les filtres en lisant l'état actuel des formulaires ou localStorage
     let noteTypeFilter = savedOptions?.noteTypeFilter || document.querySelector('input[name="noteType"]:checked')?.value || 'both';
@@ -151,6 +265,54 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fin de l'initialisation
     isInitializing = false;
     
+    // Gestion du changement de langue
+    const languageButtons = document.querySelectorAll('.btn-lang');
+    languageButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const newLang = this.dataset.lang;
+            if (newLang === currentLanguage) return;
+            
+            // Mettre à jour la langue
+            currentLanguage = newLang;
+            
+            // Mettre à jour les boutons actifs
+            languageButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Si anglais, passer automatiquement en notation internationale
+            if (newLang === 'en' && frenchNotation) {
+                frenchNotation = false;
+                const frets = document.querySelectorAll('.fret');
+                frets.forEach(fret => {
+                    const noteSpan = fret.querySelector('.note');
+                    if (noteSpan) {
+                        noteSpan.textContent = fret.dataset.noteInt;
+                    }
+                });
+                toggleNotationButton.textContent = translate('display.frenchNotation');
+            }
+            // Si français et notation internationale, proposer de revenir en française
+            else if (newLang === 'fr' && !frenchNotation) {
+                // Garder la notation internationale mais mettre à jour le texte du bouton
+                toggleNotationButton.textContent = translate('display.frenchNotation');
+            }
+            
+            // Mettre à jour toutes les traductions
+            updateAllTranslations();
+            
+            // Mettre à jour l'affichage des options
+            updateOptionsDisplay();
+            
+            // Regénérer la question si une est en cours
+            if (currentQuestion) {
+                generateQuestion();
+            }
+            
+            // Sauvegarder la langue
+            saveGameOptions();
+        });
+    });
+    
     console.log('Initialisation - Filtre type:', noteTypeFilter, 'Filtre cordes:', stringFilter);
     
     // Fonction utilitaire pour mettre à jour le filtre de cordes
@@ -168,18 +330,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour mettre à jour le récapitulatif des options
     function updateOptionsDisplay() {
         // Mode de jeu
-        const modeText = currentMode === 'practice' ? 'Entraînement libre' : 
-                        currentMode === 'live-guitar' ? 'Guitare Live' : 'Trouver la note';
+        const modeText = currentMode === 'practice' ? translate('mode.practice') : 
+                        currentMode === 'live-guitar' ? translate('mode.liveGuitar') : translate('mode.findNote');
         optionModeElement.textContent = modeText;
         
         // Type de notes
-        const noteTypeText = noteTypeFilter === 'both' ? 'Toutes' : 
-                            noteTypeFilter === 'natural' ? 'Naturelles' : 'Altérées';
+        const noteTypeText = noteTypeFilter === 'both' ? translate('summary.all') : 
+                            noteTypeFilter === 'natural' ? translate('summary.natural') : translate('summary.sharp');
         optionNoteTypeElement.textContent = noteTypeText;
         
         // Cordes sélectionnées
         if (stringFilter.length === 6) {
-            optionStringsElement.textContent = 'Toutes';
+            optionStringsElement.textContent = translate('summary.all');
         } else {
             const stringLabels = {
                 'e': 'Mi aigu',
@@ -194,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Notation
-        optionNotationElement.textContent = frenchNotation ? 'Française' : 'Internationale';
+        optionNotationElement.textContent = frenchNotation ? translate('summary.french') : translate('summary.international');
     }
 
     // Initialiser l'affichage des options
@@ -422,9 +584,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Adapter le message selon le mode
         if (currentMode === 'live-guitar') {
-            questionElement.textContent = 'Cliquez sur "Démarrer" pour commencer';
+            questionElement.textContent = translate('question.startLive');
         } else {
-            questionElement.textContent = 'Cliquez sur "Nouvelle question" pour commencer';
+            questionElement.textContent = translate('question.start');
         }
         
         waitingForAnswer = false;
@@ -477,7 +639,11 @@ document.addEventListener('DOMContentLoaded', function() {
             element: randomFret
         };
         
-        questionElement.innerHTML = `Où est <span class="highlight-note">${targetNote}</span> sur la corde de <span class="highlight-string">${stringName}</span> ?`;
+        const questionTemplate = translate('questionText');
+        const questionText = questionTemplate
+            .replace('{note}', `<span class="highlight-note">${targetNote}</span>`)
+            .replace('{string}', `<span class="highlight-string">${stringName}</span>`);
+        questionElement.innerHTML = questionText;
         waitingForAnswer = true;
     }
 
@@ -565,12 +731,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isListening) {
                 // Arrêter le micro
                 stopMicrophone();
-                startStopLiveButton.innerHTML = '<span class="btn-icon">▶️</span> Démarrer';
+                startStopLiveButton.innerHTML = `<span class="btn-icon">▶️</span> <span data-i18n="liveGuitar.start">${translate('liveGuitar.start')}</span>`;
                 startStopLiveButton.classList.remove('active');
-                questionElement.textContent = 'Cliquez sur "Démarrer" pour commencer';
+                questionElement.textContent = translate('question.startLive');
             } else {
                 // Démarrer le micro
-                startStopLiveButton.innerHTML = '<span class="btn-icon">⏸️</span> Arrêter';
+                startStopLiveButton.innerHTML = `<span class="btn-icon">⏸️</span> <span data-i18n="liveGuitar.stop">${translate('liveGuitar.stop')}</span>`;
                 startStopLiveButton.classList.add('active');
                 startMicrophoneForLiveMode();
             }
@@ -652,10 +818,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (micIndicator && micText) {
             if (active) {
                 micIndicator.classList.add('active');
-                micText.textContent = 'Micro actif - Jouez !';
+                micText.textContent = translate('mic.active');
             } else {
                 micIndicator.classList.remove('active');
-                micText.textContent = 'Micro désactivé';
+                micText.textContent = translate('mic.inactive');
             }
         }
     }
@@ -741,7 +907,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Afficher la note détectée
     function displayDetectedNote(note) {
         if (detectedNoteElement) {
-            detectedNoteElement.textContent = note || 'En attente...';
+            detectedNoteElement.textContent = note || translate('detected.waiting');
         }
     }
 
