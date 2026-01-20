@@ -7,6 +7,13 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
+
+## [2.0.1] - 2026-01-20
+
+### 🐛 Corrigé
+- Amélioration de la gestion du microphone et de la logique de détection de hauteur en mode live
+
+---
 ## [2.0.0] - 2026-01-18
 
 ### 🎉 Version Majeure - Optimisations et Améliorations

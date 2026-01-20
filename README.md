@@ -1,7 +1,7 @@
 ﻿# 🎸 Fretboard - Apprendre les Notes du Manche de Guitare
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-2.0.0-green.svg)](https://github.com/JimmyLefrancois/fretboard)
+[![Version](https://img.shields.io/badge/Version-2.0.1-green.svg)](https://github.com/JimmyLefrancois/fretboard)
 [![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red.svg)](https://github.com/JimmyLefrancois)
 
 > Application web interactive pour apprendre et maîtriser les notes sur le manche de guitare. Entraînement, quiz et détection audio en temps réel.
