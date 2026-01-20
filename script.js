@@ -371,6 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let audioContext = null;
     let analyser = null;
     let microphone = null;
+    let mediaStream = null; // Stocker le MediaStream pour arrêter les tracks
     let pitchDetectionInterval = null;
     let isListening = false;
     
@@ -888,10 +889,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Réinitialiser
         document.body.classList.remove('game-mode-practice', 'game-mode-find-note', 'game-mode-live-guitar');
         
-        // Arrêter le micro si actif (async mais non bloqué)
+        // Arrêter le micro si actif et attendre que ce soit fait
         if (isListening) {
             stopMicrophone().catch(err => console.warn('Erreur arrêt micro:', err));
         }
+        
+        // S'assurer que waitingForAnswer est à false pour que detectPitch s'arrête
+        waitingForAnswer = false;
         
         // Réinitialiser le bouton start/stop
         const startStopLiveButton = document.getElementById('startStopLiveButton');
@@ -1155,11 +1159,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction wrapper pour démarrer le micro en mode live
     async function startMicrophoneForLiveMode() {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
             
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioContext.createAnalyser();
-            microphone = audioContext.createMediaStreamSource(stream);
+            microphone = audioContext.createMediaStreamSource(mediaStream);
             
             analyser.fftSize = AUDIO_CONFIG.FFT_SIZE;
             microphone.connect(analyser);
@@ -1206,6 +1210,12 @@ document.addEventListener('DOMContentLoaded', function() {
             microphone = null;
         }
         
+        // Arrêter tous les tracks audio du MediaStream
+        if (mediaStream) {
+            mediaStream.getTracks().forEach(track => track.stop());
+            mediaStream = null;
+        }
+        
         if (audioContext && audioContext.state !== 'closed') {
             try {
                 await audioContext.close();
@@ -1237,7 +1247,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Détection de la fréquence dominante (pitch detection)
     function detectPitch() {
-        if (!analyser || !isListening || !currentQuestion) return;
+        if (!analyser || !isListening || !currentQuestion || currentMode !== 'live-guitar') return;
 
         const bufferLength = analyser.fftSize;
         const buffer = new Float32Array(bufferLength);
@@ -1322,7 +1332,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Vérifier si la note jouée correspond
     function checkLiveNote(detectedNote) {
-        if (!currentQuestion || !waitingForAnswer || !detectedNoteElement) return;
+        // Vérifications supplémentaires pour éviter les appels en arrière-plan
+        if (!currentQuestion || !waitingForAnswer || !detectedNoteElement || !isListening || currentMode !== 'live-guitar') return;
 
         const expectedNote = currentQuestion.element.dataset.noteInt;
         
